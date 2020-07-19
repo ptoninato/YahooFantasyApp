@@ -18,16 +18,18 @@ app.use(passport.initialize()); // Used to initialize passport
 app.use(passport.session()); // Used to persist login sessions
 
 // Strategy config
-passport.use(new YahooStrategy.OAuth2Strategy({
-// eslint-disable-next-line max-len
+passport.use(new YahooStrategy.Strategy({
   clientID: keys.ClientId,
   clientSecret: keys.SecretId,
   callbackURL: 'https://c9bf59fed9a2.ngrok.io/auth/yahoo/callback',
-  scope: null
+  accessTokenUri: 'https://api.login.yahoo.com/oauth2/get_token',
+  authorizationUri: 'https://api.login.yahoo.com/oauth2/request_auth',
+  scope: 'profile fspt-r'
 },
 ((token, tokenSecret, profile, done) => {
-  console.log('26');
-  User.findOrCreate({ yahooId: profile.id }, (err, user) => done(err, user));
+  // User.findOrCreate({ yahooId: profile.id }, (err, user) => done(err, user));
+  // console.log(profile);
+  done(null, profile);
 })));
 
 // Used to stuff a piece of information into a cookie
@@ -56,12 +58,12 @@ app.get('/', (req, res) => {
 
 // passport.authenticate middleware is used here to authenticate the request
 app.get('/auth/yahoo', passport.authenticate('yahoo', {
-  scope: null // Used to specify the required data
+  scope: 'profile fspt-r'// Used to specify the required data
 }));
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  console.log('61');
+  console.log('line 66');
   res.redirect('/secret');
 });
 
