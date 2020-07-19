@@ -11,5 +11,7 @@
         "sourceType": "module"
     },
     "rules": {
+        "comma-dangle": "off",
+        "no-console": 0
     }
 }
