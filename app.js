@@ -19,7 +19,7 @@ app.use(passport.session()); // Used to persist login sessions
 // Strategy config
 passport.use(new YahooStrategy.OAuth2Strategy({
 // eslint-disable-next-line max-len
-  clientID: ClientID,
+  clientID: ClientId,
   clientSecret: SecretId,
   callbackURL: 'https://c9bf59fed9a2.ngrok.io/auth/yahoo/callback',
   scope: null
