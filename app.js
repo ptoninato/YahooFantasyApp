@@ -3,7 +3,8 @@ import passport from 'passport';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 
-import { ClientId, SecretId } from './data/keys.json';
+// eslint-disable-next-line import/extensions
+import keys from './data/keys.js';
 
 const app = express();
 
@@ -19,8 +20,8 @@ app.use(passport.session()); // Used to persist login sessions
 // Strategy config
 passport.use(new YahooStrategy.OAuth2Strategy({
 // eslint-disable-next-line max-len
-  clientID: ClientId,
-  clientSecret: SecretId,
+  clientID: keys.ClientId,
+  clientSecret: keys.SecretId,
   callbackURL: 'https://c9bf59fed9a2.ngrok.io/auth/yahoo/callback',
   scope: null
 },
