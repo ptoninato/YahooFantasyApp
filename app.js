@@ -2,11 +2,13 @@ import express from 'express';
 import passport from 'passport';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
+import YahooFantasy from 'yahoo-fantasy';
 
 // eslint-disable-next-line import/extensions
 import keys from './data/keys.js';
 
 const app = express();
+const yf = new YahooFantasy(keys.ClientId, keys.SecretId);
 
 // cookieSession config
 app.use(cookieSession({
@@ -27,8 +29,7 @@ passport.use(new YahooStrategy.Strategy({
   scope: 'profile fspt-r'
 },
 ((token, tokenSecret, profile, done) => {
-  // User.findOrCreate({ yahooId: profile.id }, (err, user) => done(err, user));
-  // console.log(profile);
+  yf.setUserToken(token);
   done(null, profile);
 })));
 
@@ -51,6 +52,7 @@ function isUserAuthenticated(req, res, next) {
   }
 }
 
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
@@ -63,13 +65,21 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  console.log('line 66');
   res.redirect('/secret');
 });
 
 // Secret route
 app.get('/secret', isUserAuthenticated, (req, res) => {
-  res.send('You have reached the secret route');
+  yf.user.game_leagues(
+    328,
+    (err, data) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(data);
+      }
+    }
+  );
 });
 
 // Logout route
