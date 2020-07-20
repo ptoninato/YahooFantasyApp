@@ -8,12 +8,12 @@ import YahooFantasy from 'yahoo-fantasy';
 import keys from './data/keys.js';
 
 const app = express();
-const yf = new YahooFantasy(keys.ClientId, keys.SecretId);
+app.yf = new YahooFantasy(keys.ClientId, keys.SecretId);
 
 // cookieSession config
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
-  keys: ['randomstringhere']
+  keys: ['key1']
 }));
 
 app.use(passport.initialize()); // Used to initialize passport
@@ -29,7 +29,7 @@ passport.use(new YahooStrategy.Strategy({
   scope: 'profile fspt-r'
 },
 ((token, tokenSecret, profile, done) => {
-  yf.setUserToken(token);
+  app.yf.setUserToken(token);
   done(null, profile);
 })));
 
@@ -52,7 +52,6 @@ function isUserAuthenticated(req, res, next) {
   }
 }
 
-
 // Routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
@@ -70,13 +69,13 @@ app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
 
 // Secret route
 app.get('/secret', isUserAuthenticated, (req, res) => {
-  yf.user.game_leagues(
-    328,
+  app.yf.user.game_leagues(
+    'mlb',
     (err, data) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(data);
+        res.render('secret.ejs', { data });
       }
     }
   );
