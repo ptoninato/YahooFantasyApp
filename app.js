@@ -3,17 +3,35 @@ import passport from 'passport';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
+import session from 'express-session';
+import mongoose from 'mongoose';
+import connectMongo from 'connect-mongo';
 
 // eslint-disable-next-line import/extensions
 import keys from './data/keys.js';
 
 const app = express();
+const MongoStore = connectMongo(session);
 app.yf = new YahooFantasy(keys.ClientId, keys.SecretId);
 
+mongoose.connect('mongodb://localhost:27017/sess', { useNewUrlParser: true, useUnifiedTopology: true });
+// const mongoStore =
+//   ((err) => {
+//     console.log(err || 'connect-mongodb setup ok');
+//   }));
+
 // cookieSession config
-app.use(cookieSession({
-  maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
-  keys: ['key1']
+// app.use(cookieSession({
+//   maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
+//   keys: ['key1']
+// }));
+
+app.use(session({
+  secret: keys.SecretId,
+  maxAge: new Date(Date.now() + 3600000),
+  resave: true,
+  saveUninitialized: true,
+  Store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 app.use(passport.initialize()); // Used to initialize passport
@@ -69,12 +87,26 @@ app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
 
 // Secret route
 app.get('/secret', isUserAuthenticated, (req, res) => {
-  app.yf.user.game_leagues(
-    'mlb',
+  app.yf.league.transactions(
+    '398.l.51361',
     (err, data) => {
       if (err) {
         res.send(err);
       } else {
+        // // define Schema
+        // const transactionSchema = mongoose.Schema({
+        //   id: String
+        // });
+
+        // const transaction = mongoose.model('transaction', transactionSchema, 'sess');
+
+        // const transaction1 = new transaction({ id: data.league_key });
+
+        // transaction1.save((err2, result) => {
+        //   if (err2) return console.error(err);
+        //   console.log(`${result.id} saved to sess collection.`);
+        // });
+
         res.render('secret.ejs', { data });
       }
     }
