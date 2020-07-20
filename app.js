@@ -6,13 +6,13 @@ import YahooFantasy from 'yahoo-fantasy';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
+import dotenv from 'dotenv';
 
-// eslint-disable-next-line import/extensions
-import keys from './data/keys.js';
+dotenv.config();
 
 const app = express();
 const MongoStore = connectMongo(session);
-app.yf = new YahooFantasy(keys.ClientId, keys.SecretId);
+app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 
 mongoose.connect('mongodb://localhost:27017/sess', { useNewUrlParser: true, useUnifiedTopology: true });
 // const mongoStore =
@@ -27,7 +27,7 @@ mongoose.connect('mongodb://localhost:27017/sess', { useNewUrlParser: true, useU
 // }));
 
 app.use(session({
-  secret: keys.SecretId,
+  secret: process.env.CLIENT_SECRET,
   maxAge: new Date(Date.now() + 3600000),
   resave: true,
   saveUninitialized: true,
@@ -39,8 +39,8 @@ app.use(passport.session()); // Used to persist login sessions
 
 // Strategy config
 passport.use(new YahooStrategy.Strategy({
-  clientID: keys.ClientId,
-  clientSecret: keys.SecretId,
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
   callbackURL: 'https://c9bf59fed9a2.ngrok.io/auth/yahoo/callback',
   accessTokenUri: 'https://api.login.yahoo.com/oauth2/get_token',
   authorizationUri: 'https://api.login.yahoo.com/oauth2/request_auth',
