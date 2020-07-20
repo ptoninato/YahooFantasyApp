@@ -41,7 +41,7 @@ app.use(passport.session()); // Used to persist login sessions
 passport.use(new YahooStrategy.Strategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: `${process.env.PROTOCOL}${process.env.DOMAIN}:${process.env.PORT}${process.env.CALLBACK_PATH}`,
+  callbackURL: `${process.env.PROTOCOL}${process.env.DOMAIN}${process.env.CALLBACK_PATH}`,
   accessTokenUri: 'https://api.login.yahoo.com/oauth2/get_token',
   authorizationUri: 'https://api.login.yahoo.com/oauth2/request_auth',
   scope: 'profile fspt-r'
