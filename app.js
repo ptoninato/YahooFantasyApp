@@ -41,7 +41,7 @@ app.use(passport.session()); // Used to persist login sessions
 passport.use(new YahooStrategy.Strategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'https://c9bf59fed9a2.ngrok.io/auth/yahoo/callback',
+  callbackURL: `${process.env.PROTOCOL}${process.env.DOMAIN}${process.env.CALLBACK_PATH}`,
   accessTokenUri: 'https://api.login.yahoo.com/oauth2/get_token',
   authorizationUri: 'https://api.login.yahoo.com/oauth2/request_auth',
   scope: 'profile fspt-r'
@@ -119,6 +119,6 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-app.listen(8000, () => {
-  console.log('Server Started!');
+app.listen(process.env.PORT, () => {
+  console.log(`Server Started at ${process.env.PROTOCOL}${process.env.DOMAIN}:${process.env.PORT}!`);
 });
