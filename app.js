@@ -3,36 +3,17 @@ import passport from 'passport';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
-import session from 'express-session';
-import mongoose from 'mongoose';
-import connectMongo from 'connect-mongo';
 import dotenv from 'dotenv';
 import pg from 'pg';
+import ImportRoutesImport from './routes/importRoutes.js';
 
 dotenv.config();
 
 const app = express();
-const pool = new pg.Pool();
-app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
+const yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
+const importRoutes = new ImportRoutesImport(yf);
 
-async function getYahooGameCodes() {
-  try {
-    const results = await pool.query('SELECT distinct yahoogamecode FROM gamecodetype');
-    return [...new Set(results.rows.map((item) => item.yahoogamecode))];
-  } catch (e) {
-    console.log(e);
-    return e;
-  }
-}
-
-async function insertYahooGameCodes(code) {
-  pool.query(
-    `INSERT INTO gamecodetype(yahoogamecode, yahoogamename) VALUES ('${code.code}', '${code.name}')`,
-    (err, res) => {
-      console.log(err, res);
-    }
-  );
-}
+app.use('/import', importRoutes);
 
 // cookieSession config
 app.use(cookieSession({
@@ -53,7 +34,7 @@ passport.use(new YahooStrategy.Strategy({
   scope: 'profile fspt-r'
 },
 ((token, tokenSecret, profile, done) => {
-  app.yf.setUserToken(token);
+  yf.setUserToken(token);
   done(null, profile);
 })));
 
@@ -88,7 +69,7 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/secret');
+  res.redirect('/import/importGameCodeAndType');
 });
 
 app.get('/database', async (req, res) => {
@@ -98,36 +79,7 @@ app.get('/database', async (req, res) => {
 });
 
 // Secret route
-app.get('/secret', isUserAuthenticated, async (req, res) => {
-  const returnedData = await app.yf.user.games();
-
-  const data = await returnedData.games.reduce((data, game) => {
-    if (game.code === 'mlb' || game.code === 'nfl') {
-      data.push(game);
-    }
-    return data;
-  }, []);
-
-  console.log(data.length);
-
-  const gamecodes = []; const gameCodeOutput = [];
-  for (let i = 0; i < data.length; i++) {
-    if (gamecodes[data[i].code]) continue;
-    gamecodes[data[i].code] = true;
-    gameCodeOutput.push({ code: data[i].code, name: data[i].name });
-  }
-
-  const existingTypes = await getYahooGameCodes();
-  console.log(existingTypes);
-
-  gameCodeOutput.forEach((gamecode) => {
-    if (existingTypes.length === 0 || !existingTypes.includes(gamecode.code)) {
-      insertYahooGameCodes(gamecode);
-    }
-  });
-
-  res.render('secret.ejs', { data });
-});
+app.get('/secret', isUserAuthenticated, async (req, res) => ('secret.ejs'));
 
 // Logout route
 app.get('/logout', (req, res) => {
@@ -138,3 +90,5 @@ app.get('/logout', (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server Started at ${process.env.PROTOCOL}${process.env.DOMAIN}`);
 });
+
+export default app;
