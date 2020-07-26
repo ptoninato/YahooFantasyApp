@@ -1,6 +1,4 @@
-import pg from 'pg';
-
-const pool = new pg.Pool();
+import pool from './db.js';
 
 async function getYahooGameCodes() {
   try {
@@ -13,12 +11,13 @@ async function getYahooGameCodes() {
 }
 
 async function insertYahooGameCodes(code) {
-  pool.query(
-    `INSERT INTO gamecodetype(yahoogamecode, yahoogamename) VALUES ('${code.code}', '${code.name}')`,
+  const query = 'insert into gamecodetype(yahoogamecode, yahoogamename) values ($1, $2)';
+  const values = [code.code, code.name];
+
+  pool.query(query, values,
     (err, res) => {
       console.log(err, res);
-    }
-  );
+    });
 }
 
 export default { getYahooGameCodes, insertYahooGameCodes };

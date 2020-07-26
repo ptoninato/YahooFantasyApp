@@ -4,7 +4,6 @@ import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
-import pg from 'pg';
 import ImportRoutesImport from './routes/importRoutes.js';
 
 dotenv.config();

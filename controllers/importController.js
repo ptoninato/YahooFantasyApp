@@ -12,8 +12,6 @@ function importController() {
       return data;
     }, []);
 
-    console.log(data.length);
-
     const gamecodes = []; const gameCodeOutput = [];
     for (let i = 0; i < data.length; i++) {
       if (gamecodes[data[i].code]) continue;
@@ -22,7 +20,6 @@ function importController() {
     }
 
     const existingTypes = await gameCodeTypeService.getYahooGameCodes();
-    console.log(existingTypes);
 
     gameCodeOutput.forEach((gamecode) => {
       if (existingTypes.length === 0 || !existingTypes.includes(gamecode.code)) {
