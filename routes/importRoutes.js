@@ -1,39 +1,13 @@
 import express from 'express';
-import service from '../services/gameCodeTypeService.js';
+import ControllerImport from '../controllers/importController.js';
+
+const importRouter = express.Router();
 
 function importRoutes(yf) {
-  const importRouter = express.Router();
+  const controller = new ControllerImport(yf);
 
-  importRouter.use('/importGameCodeAndType', async (req, res, next) => {
-    const returnedData = await yf.user.games();
-
-    const data = await returnedData.games.reduce((data, game) => {
-      if (game.code === 'mlb' || game.code === 'nfl') {
-        data.push(game);
-      }
-      return data;
-    }, []);
-
-    console.log(data.length);
-
-    const gamecodes = []; const gameCodeOutput = [];
-    for (let i = 0; i < data.length; i++) {
-      if (gamecodes[data[i].code]) continue;
-      gamecodes[data[i].code] = true;
-      gameCodeOutput.push({ code: data[i].code, name: data[i].name });
-    }
-
-    const existingTypes = await service.getYahooGameCodes();
-    console.log(existingTypes);
-
-    gameCodeOutput.forEach((gamecode) => {
-      if (existingTypes.length === 0 || !existingTypes.includes(gamecode.code)) {
-        service.insertYahooGameCodes(gamecode);
-      }
-    });
-
-    res.render('secret.ejs', { data });
-  });
+  importRouter.route('/importGameCodeAndType')
+    .get(controller.importGameAndGameType);
 
   return importRouter;
 }
