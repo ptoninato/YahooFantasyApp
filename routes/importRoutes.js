@@ -3,11 +3,11 @@ import ControllerImport from '../controllers/importController.js';
 
 const importRouter = express.Router();
 
-function importRoutes(yf) {
-  const controller = new ControllerImport(yf);
+function importRoutes(req, res) {
+  const controller = new ControllerImport();
 
   importRouter.route('/importGameCodeAndType')
-    .get(controller.importGameAndGameType);
+    .get(controller.importBothGameTypeAndGame);
 
   return importRouter;
 }

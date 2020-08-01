@@ -1,10 +1,9 @@
 import gameCodeTypeService from '../services/gameCodeTypeService.js';
 import gameCodeService from '../services/gameCodeService.js';
 
-function ImportController(yf) {
-  async function importGameAndGameType(req, res) {
-    const returnedData = await yf.user.games();
-
+function ImportController() {
+  async function getUserGameFromYahoo(req, res) {
+    const returnedData = await req.app.yf.user.games();
     const data = await returnedData.games.reduce((data, game) => {
       if (game.code === 'mlb' || game.code === 'nfl') {
         data.push(game);
@@ -12,11 +11,17 @@ function ImportController(yf) {
       return data;
     }, []);
 
+    return data;
+  }
+
+  async function importGameCodeType(req, res) {
+    const userData = await getUserGameFromYahoo(req, res);
+
     const gamecodes = []; const gameCodeOutput = [];
-    for (let i = 0; i < data.length; i++) {
-      if (gamecodes[data[i].code]) continue;
-      gamecodes[data[i].code] = true;
-      gameCodeOutput.push({ code: data[i].code, name: data[i].name });
+    for (let i = 0; i < userData.length; i++) {
+      if (gamecodes[userData[i].code]) continue;
+      gamecodes[userData[i].code] = true;
+      gameCodeOutput.push({ code: userData[i].code, name: userData[i].name });
     }
 
     const existingTypes = await gameCodeTypeService.getYahooGameCodes();
@@ -25,6 +30,10 @@ function ImportController(yf) {
         gameCodeTypeService.insertYahooGameCodeType(gamecode);
       }
     });
+  }
+
+  async function importGameCode(req, res) {
+    const userData = await getUserGameFromYahoo(req, res);
 
     const gameCodes = await gameCodeService.getYahooGameCodes();
     const allGameCodeTypes = await gameCodeTypeService.getAllCodeTypes();
@@ -39,17 +48,41 @@ function ImportController(yf) {
       }
     }
 
-    data.forEach((code) => {
+    const codesToImport = [];
+    userData.forEach((code) => {
       if (gameCodes.length === 0 || !gameCodes.includes(code.game_id)) {
         if (code.code === 'nfl') {
-          gameCodeService.insertYahooGameCode(nflTypeId, code);
-        } else if (code.code === 'mlb') { gameCodeService.insertYahooGameCode(mlbTypeId, code); }
+          codesToImport.push(
+            {
+              gamecodetypeid: nflTypeId,
+              yahoogamecode: code.game_id,
+              season: code.season
+            }
+          );
+        } else if (code.code === 'mlb') {
+          codesToImport.push(
+            {
+              gamecodetypeid: mlbTypeId,
+              yahoogamecode: code.game_id,
+              season: code.season
+            }
+          );
+        }
       }
     });
 
+    await gameCodeService.insertYahooGameCodeMultiple(codesToImport);
+
+    return codesToImport;
+  }
+
+  async function importBothGameTypeAndGame(req, res) {
+    let data = await importGameCodeType(req, res);
+    data = await importGameCode(req, res);
     res.render('secret.ejs', { data });
   }
-  return { importGameAndGameType };
+
+  return { importGameCodeType, importGameCode, importBothGameTypeAndGame };
 }
 
 export default ImportController;

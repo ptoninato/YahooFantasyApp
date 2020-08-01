@@ -25,6 +25,7 @@
     "passport": "^0.4.1",
     "passport-yahoo-oauth2": "git+https://github.com/auth0/passport-yahoo-oauth2.git",
     "pg": "^8.3.0",
+    "sql": "^0.78.0",
     "yahoo-fantasy": "^3.2.0"
   },
   "devDependencies": {
