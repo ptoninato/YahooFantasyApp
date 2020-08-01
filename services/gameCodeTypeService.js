@@ -1,4 +1,14 @@
 import pool from './db.js';
+import sql from 'sql';
+
+const GameCodeType = sql.define({
+  name: 'gamecodetype',
+  columns: [
+    'gamecodetypeid',
+    'yahoogamecode',
+    'yahoogamename'
+  ]
+});
 
 async function getAllCodeTypes() {
   try {
@@ -29,4 +39,17 @@ async function insertYahooGameCodeType(code) {
     });
 }
 
-export default { getAllCodeTypes, getYahooGameCodes, insertYahooGameCodeType };
+async function insertYahooGameCodeTypeMultiple(codes) {
+  try {
+    const query = GameCodeType.insert(codes).returning(GameCodeType.gamecodetypeid).toQuery();
+    const { rows } = await pool.query(query);
+    console.log(rows);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    // client.end();
+  }
+}
+
+
+export default { getAllCodeTypes, getYahooGameCodes, insertYahooGameCodeType, insertYahooGameCodeTypeMultiple };

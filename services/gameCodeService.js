@@ -16,8 +16,7 @@ const GameCode = sql.define({
 
 async function getYahooGameCodes() {
   try {
-    const client = await pool.connect();
-    const results = await client.query('SELECT distinct yahoogamecode FROM gamecode');
+    const results = await pool.query('SELECT distinct yahoogamecode FROM gamecode');
     return [...new Set(results.rows.map((item) => item.yahoogamecode))];
   } catch (e) {
     console.log(e);
@@ -39,9 +38,7 @@ async function insertYahooGameCode(gamecodeTypeId, code) {
 }
 
 async function insertYahooGameCodeMultiple(codes) {
-  // let client;
   try {
-    // client = new pg.Client();
     const query = GameCode.insert(codes).returning(GameCode.gamecodeid).toQuery();
     const { rows } = await pool.query(query);
     console.log(rows);

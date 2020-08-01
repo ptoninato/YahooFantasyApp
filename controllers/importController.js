@@ -25,11 +25,16 @@ function ImportController() {
     }
 
     const existingTypes = await gameCodeTypeService.getYahooGameCodes();
+    const typesToInsert = [];
     gameCodeOutput.forEach((gamecode) => {
       if (existingTypes.length === 0 || !existingTypes.includes(gamecode.code)) {
-        gameCodeTypeService.insertYahooGameCodeType(gamecode);
+        typesToInsert.push({
+          yahoogamename: gamecode.name,
+          yahoogamecode: gamecode.code
+        });
       }
     });
+    await gameCodeTypeService.insertYahooGameCodeTypeMultiple(typesToInsert);
   }
 
   async function importGameCode(req, res) {
