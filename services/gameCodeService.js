@@ -1,18 +1,10 @@
 import pg from 'pg';
-import sql from 'sql';
+import gameCodeModel from '../models/gamecodeModel.js';
+import yahooApiService from './yahooApiService.js';
+import gameCodeTypeService from './gameCodeTypeService.js';
 
 const { Pool } = pg;
 const pool = new Pool();
-
-const GameCode = sql.define({
-  name: 'gamecode',
-  columns: [
-    'gamecodeid',
-    'gamecodetypeid',
-    'yahoogamecode',
-    'season'
-  ]
-});
 
 async function getYahooGameCodes() {
   try {
@@ -22,6 +14,65 @@ async function getYahooGameCodes() {
     console.log(e);
     return e;
   }
+}
+
+async function insertYahooGameCodeMultiple(codes) {
+  try {
+    const query = gameCodeModel.insert(codes).returning(gameCodeModel.gamecodeid).toQuery();
+    const { rows } = await pool.query(query);
+    console.log(rows);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    // client.end();
+  }
+}
+
+async function importGameCode(req, res) {
+  const result = await yahooApiService.getUserGameFromYahoo(req, res);
+  const userData = result.data;
+
+  const gameCodes = await getYahooGameCodes();
+  const allGameCodeTypes = await gameCodeTypeService.getAllCodeTypes();
+  let nflTypeId;
+  let mlbTypeId;
+
+  for (let i = 0; i < allGameCodeTypes.rows.length; i++) {
+    if (allGameCodeTypes.rows[i].yahoogamecode === 'nfl') {
+      nflTypeId = allGameCodeTypes.rows[i].gamecodetypeid;
+    } else if (allGameCodeTypes.rows[i].yahoogamecode === 'mlb') {
+      mlbTypeId = allGameCodeTypes.rows[i].gamecodetypeid;
+    }
+  }
+
+  const codesToImport = [];
+  userData.forEach((code) => {
+    if (gameCodes.length === 0 || !gameCodes.includes(code.game_id)) {
+      if (code.code === 'nfl') {
+        codesToImport.push(
+          {
+            gamecodetypeid: nflTypeId,
+            yahoogamecode: code.game_id,
+            season: code.season
+          }
+        );
+      } else if (code.code === 'mlb') {
+        codesToImport.push(
+          {
+            gamecodetypeid: mlbTypeId,
+            yahoogamecode: code.game_id,
+            season: code.season
+          }
+        );
+      }
+    }
+  });
+
+  if (codesToImport.length > 0) {
+    await insertYahooGameCodeMultiple(codesToImport);
+  }
+  const test = req.app.yf.user.game_leagues([328, 390]);
+  return test;
 }
 
 async function insertYahooGameCode(gamecodeTypeId, code) {
@@ -37,16 +88,9 @@ async function insertYahooGameCode(gamecodeTypeId, code) {
   })();
 }
 
-async function insertYahooGameCodeMultiple(codes) {
-  try {
-    const query = GameCode.insert(codes).returning(GameCode.gamecodeid).toQuery();
-    const { rows } = await pool.query(query);
-    console.log(rows);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    // client.end();
-  }
-}
-
-export default { getYahooGameCodes, insertYahooGameCode, insertYahooGameCodeMultiple };
+export default {
+  getYahooGameCodes,
+  insertYahooGameCode,
+  insertYahooGameCodeMultiple,
+  importGameCode
+};

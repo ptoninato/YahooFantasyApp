@@ -1,14 +1,6 @@
 import pool from './db.js';
-import sql from 'sql';
-
-const GameCodeType = sql.define({
-  name: 'gamecodetype',
-  columns: [
-    'gamecodetypeid',
-    'yahoogamecode',
-    'yahoogamename'
-  ]
-});
+import yahooService from './yahooApiService.js';
+import gameCodeTypeModel from '../models/gamecodeTypeModel.js';
 
 async function getAllCodeTypes() {
   try {
@@ -41,7 +33,7 @@ async function insertYahooGameCodeType(code) {
 
 async function insertYahooGameCodeTypeMultiple(codes) {
   try {
-    const query = GameCodeType.insert(codes).returning(GameCodeType.gamecodetypeid).toQuery();
+    const query = gameCodeTypeModel.insert(codes).returning(gameCodeTypeModel.gamecodetypeid).toQuery();
     const { rows } = await pool.query(query);
     console.log(rows);
   } catch (e) {
@@ -51,5 +43,41 @@ async function insertYahooGameCodeTypeMultiple(codes) {
   }
 }
 
+async function importGameCodeType(req, res) {
+  const result = await yahooService.getUserGameFromYahoo(req, res);
+  const userData = result.data;
 
-export default { getAllCodeTypes, getYahooGameCodes, insertYahooGameCodeType, insertYahooGameCodeTypeMultiple };
+  const gamecodes = []; const gameCodeOutput = [];
+  for (let i = 0; i < userData.length; i++) {
+    if (gamecodes[userData[i].code]) continue;
+    gamecodes[userData[i].code] = true;
+    gameCodeOutput.push({ code: userData[i].code, name: userData[i].name });
+  }
+
+  const existingTypes = await getYahooGameCodes();
+  const typesToInsert = [];
+  gameCodeOutput.forEach((gamecode) => {
+    if (existingTypes.length === 0 || !existingTypes.includes(gamecode.code)) {
+      typesToInsert.push({
+        yahoogamename: gamecode.name,
+        yahoogamecode: gamecode.code
+      });
+    }
+  });
+  console.log(typesToInsert);
+  console.log(typesToInsert.length);
+
+  if (typesToInsert.length > 0) {
+    console.log('types importing');
+    await insertYahooGameCodeTypeMultiple(typesToInsert);
+  }
+  console.log('types imported');
+}
+
+export default {
+  getAllCodeTypes,
+  getYahooGameCodes,
+  insertYahooGameCodeType,
+  insertYahooGameCodeTypeMultiple,
+  importGameCodeType
+};
