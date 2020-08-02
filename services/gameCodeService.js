@@ -71,8 +71,6 @@ async function importGameCode(req, res) {
   if (codesToImport.length > 0) {
     await insertYahooGameCodeMultiple(codesToImport);
   }
-  const test = req.app.yf.user.game_leagues([328, 390]);
-  return test;
 }
 
 async function insertYahooGameCode(gamecodeTypeId, code) {

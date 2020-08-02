@@ -9,6 +9,12 @@ function importRoutes(req, res) {
   importRouter.route('/importGameCodeAndType')
     .get(controller.importBothGameTypeAndGame);
 
+  importRouter.route('/importAll')
+    .get(controller.importAll);
+
+  importRouter.route('/importLeagues')
+    .get(controller.importLeagues);
+
   return importRouter;
 }
 
