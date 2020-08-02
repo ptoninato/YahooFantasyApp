@@ -15,6 +15,9 @@ function importRoutes(req, res) {
   importRouter.route('/importLeagues')
     .get(controller.importLeagues);
 
+  importRouter.route('/importSeasons')
+    .get(controller.importSeasons);
+
   return importRouter;
 }
 

@@ -6,6 +6,15 @@ import gameCodeTypeService from './gameCodeTypeService.js';
 const { Pool } = pg;
 const pool = new Pool();
 
+const getAllGameCodes = async () => {
+  try {
+    return await pool.query('SELECT * FROM gamecode');
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
 async function getYahooGameCodes() {
   try {
     const results = await pool.query('SELECT distinct yahoogamecode FROM gamecode');
@@ -87,6 +96,7 @@ async function insertYahooGameCode(gamecodeTypeId, code) {
 }
 
 export default {
+  getAllGameCodes,
   getYahooGameCodes,
   insertYahooGameCode,
   insertYahooGameCodeMultiple,

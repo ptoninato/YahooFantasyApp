@@ -1,6 +1,7 @@
 import gameCodeTypeService from '../services/gameCodeTypeService.js';
 import gameCodeService from '../services/gameCodeService.js';
 import leagueService from '../services/leagueService.js';
+import sesaonService from '../services/seasonService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -24,10 +25,16 @@ function ImportController() {
     res.render('secret.ejs', { data });
   }
 
+  async function importSeasons(req, res) {
+    const data = await sesaonService.importSeasons(req, res);
+    res.render('secret.ejs', { data });
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
-    importLeagues
+    importLeagues,
+    importSeasons
   };
 }
 

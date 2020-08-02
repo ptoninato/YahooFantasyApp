@@ -4,10 +4,19 @@ import yahooApiService from './yahooApiService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 import gameCodeService from './gameCodeService.js';
 
-const GetLeagueRecords = async () => {
+const GetDistinctLeagueNames = async () => {
   try {
     const results = await pool.query('SELECT distinct leaguename FROM leagues');
     return [...new Set(results.rows.map((item) => item.leaguename))];
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
+const GetLeagueRecords = async () => {
+  try {
+    return await pool.query('SELECT * FROM league');
   } catch (e) {
     console.log(e);
     return e;
@@ -29,7 +38,7 @@ const insertYahooLeagues = async (leagues) => {
 
 async function filterLeagueRecords(leagueRecords) {
   const exisitingGameCodes = await gameCodeTypeService.getAllCodeTypes();
-  const existingLeagueNames = await GetLeagueRecords();
+  const existingLeagueNames = await GetDistinctLeagueNames();
   const leagues = []; const leaguesOutput = [];
   for (let i = 0; i < leagueRecords.length; i++) {
     for (let x = 0; x < leagueRecords[i].leagues.length; x++) {
