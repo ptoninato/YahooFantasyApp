@@ -45,9 +45,11 @@ async function filterLeagueRecords(leagueRecords) {
       const currentLeague = leagueRecords[i].leagues[x][0];
       if (leagues[currentLeague.name]
         && (existingLeagueNames.length > 0 || !existingLeagueNames.includes(currentLeague.name))) continue;
-      const gameCodeType = exisitingGameCodes.rows.filter((value) => value.yahoogamecode === currentLeague.game_code);
-      leagues[currentLeague.name] = true;
-      leaguesOutput.push({ leaguename: currentLeague.name, gamecodetypeid: gameCodeType[0].gamecodetypeid });
+      if (currentLeague.name === 'Cerveza Mesa Memorial League' || currentLeague.name === 'The League') {
+        const gameCodeType = exisitingGameCodes.rows.filter((value) => value.yahoogamecode === currentLeague.game_code);
+        leagues[currentLeague.name] = true;
+        leaguesOutput.push({ leaguename: currentLeague.name, gamecodetypeid: gameCodeType[0].gamecodetypeid });
+      }
     }
   }
   return leaguesOutput;

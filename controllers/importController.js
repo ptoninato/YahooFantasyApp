@@ -15,8 +15,9 @@ function ImportController() {
   async function importAll(req, res) {
     console.log('start type');
     let data = await gameCodeTypeService.importGameCodeType(req, res);
-    console.log('start gamecode');
     data = await gameCodeService.importGameCode(req, res);
+    data = await leagueService.InsertLeagues(req, res);
+    data = await sesaonService.importSeasons(req, res);
     res.render('secret.ejs', { data });
   }
 
