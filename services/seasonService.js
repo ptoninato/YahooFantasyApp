@@ -43,7 +43,7 @@ async function filterSeasonRecords(leagueRecords) {
           {
             leagueid: league[0].leagueid,
             yahooleagueid: currentLeague.league_id,
-            gamecodeid: gamecode[0F].gamecodeid,
+            gamecodeid: gamecode[0].gamecodeid,
             startdate: currentLeague.start_date,
             enddate: currentLeague.end_date,
             seasonyear: currentLeague.season,
