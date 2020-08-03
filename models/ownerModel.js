@@ -6,7 +6,9 @@ const Owner = sql.define({
     'ownerid',
     'leagueid',
     'yahooguid',
-    'email'
+    'ownername',
+    'email',
+    'yahoomanagerid'
   ]
 });
 

@@ -18,4 +18,10 @@ async function getUserLeaguesFromYahoo(req, res, gameCodes) {
   return res;
 }
 
-export default { getUserGameFromYahoo, getUserLeaguesFromYahoo };
+async function getLeagueTeams(req, res, leaguekey) {
+  const returnData = await req.app.yf.league.teams(leaguekey);
+  res.data = returnData;
+  return res;
+}
+
+export default { getUserGameFromYahoo, getUserLeaguesFromYahoo, getLeagueTeams };
