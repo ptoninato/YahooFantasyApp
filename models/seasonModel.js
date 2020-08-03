@@ -5,6 +5,7 @@ const SeasonModel = sql.define({
   columns: [
     'seasonid',
     'leagueid',
+    'gamecodeid',
     'yahooleagueid',
     'startdate',
     'enddate',

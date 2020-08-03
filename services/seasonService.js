@@ -29,9 +29,12 @@ async function insertSeasons(seasons) {
 async function filterSeasonRecords(leagueRecords) {
   const existingLeagues = await leagueService.GetLeagueRecords();
   const existingSeasons = await getExistingSeasons();
+  const existingGameCodes = await gameCodeService.getAllGameCodes();
   const seasonsOutput = [];
   for (let i = 0; i < leagueRecords.length; i++) {
     for (let x = 0; x < leagueRecords[i].leagues.length; x++) {
+      const currentGameCode = leagueRecords[i].game_id;
+      const gamecode = existingGameCodes.rows.filter((value) => value.yahoogamecode === currentGameCode);
       const currentLeague = leagueRecords[i].leagues[x][0];
       if (existingLeagues.length > 0 && existingSeasons.length === 0) continue;
       const league = existingLeagues.rows.filter((value) => value.leaguename === currentLeague.name);
@@ -40,6 +43,7 @@ async function filterSeasonRecords(leagueRecords) {
           {
             leagueid: league[0].leagueid,
             yahooleagueid: currentLeague.league_id,
+            gamecodeid: gamecode[0F].gamecodeid,
             startdate: currentLeague.start_date,
             enddate: currentLeague.end_date,
             seasonyear: currentLeague.season,
