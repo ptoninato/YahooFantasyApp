@@ -5,14 +5,17 @@ import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
 import ImportRoutesImport from './routes/importRoutes.js';
+import ExportRoutesImport from './routes/exportRoutes.js';
 
 dotenv.config();
 
 const app = express();
 const yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 const importRoutes = new ImportRoutesImport(yf);
+const exportRoutes = new ExportRoutesImport(yf);
 
 app.use('/import', importRoutes);
+app.use('/export', exportRoutes);
 
 // cookieSession config
 app.use(cookieSession({
@@ -68,7 +71,7 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/import/importGameCodeAndType');
+  res.redirect('/export/exportPlayers');
 });
 
 app.get('/database', async (req, res) => {
