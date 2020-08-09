@@ -3,6 +3,7 @@ import gameCodeService from '../services/gameCodeService.js';
 import leagueService from '../services/leagueService.js';
 import sesaonService from '../services/seasonService.js';
 import fantasyTeamService from '../services/fantasyTeamService.js';
+import transactionService from '../services/transactionService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -37,12 +38,18 @@ function ImportController() {
     res.render('secret.ejs', { data });
   }
 
+  async function importTransactions(req, res) {
+    const data = await transactionService.ImportTransactions(req, res);
+    res.render('secret.ejs', { data });
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
     importLeagues,
     importSeasons,
-    importTeams
+    importTeams,
+    importTransactions
   };
 }
 

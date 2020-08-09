@@ -11,6 +11,15 @@ const getYahooGuidsFromDb = async () => {
   }
 };
 
+const getOwnersFromDb = async () => {
+  try {
+    return await pool.query('SELECT * FROM owner');
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
 async function insertOwners(owners) {
   try {
     const query = ownerModel.insert(owners).returning(ownerModel.ownerid).toQuery();
@@ -45,4 +54,4 @@ const importOwners = async (req, res, owners, leagueid) => {
   }
 };
 
-export default { getYahooGuidsFromDb, importOwners };
+export default { getYahooGuidsFromDb, importOwners, getOwnersFromDb };
