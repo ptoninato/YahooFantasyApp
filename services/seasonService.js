@@ -14,6 +14,19 @@ async function getExistingSeasons() {
   }
 }
 
+async function getSeasonIdYahooLeagueIdAndGameCodeId() {
+  try {
+    const query = `select s.seasonid, s.yahooleagueid, gc.yahoogamecode from season as s
+    join gamecode as gc on s.gamecodeid = gc.gamecodeid
+    order by seasonid desc`;
+    const results = await pool.query(query);
+    return results.rows;
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+}
+
 async function insertSeasons(seasons) {
   try {
     const query = seasonModel.insert(seasons).returning(seasonModel.seasonid).toQuery();
@@ -71,5 +84,6 @@ const importSeasons = async (req, res) => {
 };
 
 export default {
-  importSeasons
+  importSeasons,
+  getSeasonIdYahooLeagueIdAndGameCodeId
 };

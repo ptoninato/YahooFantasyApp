@@ -11,4 +11,16 @@ const GetPlayers = async () => {
   }
 };
 
-export default { GetPlayers };
+const InsertPlayer = async (req, res, player) => {
+  try {
+    const query = playerModel.insert(player).returning(playerModel.playerid).toQuery();
+    const { rows } = await pool.query(query);
+    console.log(rows);
+    return rows;
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
+export default { GetPlayers, InsertPlayer };

@@ -6,7 +6,6 @@ import fantasyTeamModel from '../models/fantasyteamModel.js';
 
 const seasonsToImport = async (req, res) => {
   try {
-    // return await pool.query('select CONCAT(gc.yahoogamecode,\'.l.\',s.yahooleagueid) as league from season as s join gamecode as gc on s.gamecodeid = gc.gamecodeid');
     return await pool.query('select gc.yahoogamecode as gamecode, s.yahooleagueid as league, s.seasonid as seasonid from season as s join gamecode as gc on s.gamecodeid = gc.gamecodeid');
   } catch (e) {
     console.log(e);

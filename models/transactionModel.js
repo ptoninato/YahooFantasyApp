@@ -3,12 +3,14 @@ import sql from 'sql';
 const Transaction = sql.define({
   name: 'transaction',
   columns: [
-    'transacitonid',
-    'fantasyteamid',
+    'transactionid',
     'seasonid',
-    'ownerid',
+    'fantasyteamid',
     'playerid',
-    'yahootransactionid'
+    'transactiontypeid',
+    'yahootransactionid',
+    'tradefromteamid',
+    'transactiondate'
   ]
 });
 
