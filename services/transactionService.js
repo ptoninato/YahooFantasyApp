@@ -21,7 +21,7 @@ async function InsertTransactions(transactions) {
   try {
     const query = transactionModel.insert(transactions).returning(transactionModel.transactionid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
+    console.log(rows.length);
   } catch (e) {
     console.error(e);
   } finally {
@@ -47,9 +47,9 @@ const ImportTransactions = async (req, res) => {
       const transaction = transactions.data.transactions[t];
       for (let p = 0; p < transaction.players.length; p++) {
         const transactionPlayer = transaction.players[p];
-        const playersFromDb = await playerSerivce.GetPlayers();
-        const transactionTypesFromDb = await transactionTypeService.GetTransactionTypes();
-        const existingPlayers = await playersFromDb.rows.filter((x) => x.yahooplayerid === Number(transactionPlayer.player_id));
+        let playersFromDb = await playerSerivce.GetPlayers();
+        let transactionTypesFromDb = await transactionTypeService.GetTransactionTypes();
+        let existingPlayers = await playersFromDb.rows.filter((x) => x.yahooplayerid === Number(transactionPlayer.player_id) && x.gamecodetypeid === codeTypeId);
         if (existingPlayers.length === 0) {
           const playerToAdd = {
             gamecodetypeid: codeTypeId,
@@ -58,13 +58,17 @@ const ImportTransactions = async (req, res) => {
             lastname: transactionPlayer.name.last.length > 0 ? transactionPlayer.name.last : 'Defense'
           };
           await playerSerivce.InsertPlayer(req, res, playerToAdd);
+          playersFromDb = await playerSerivce.GetPlayers();
+          existingPlayers = await playersFromDb.rows.filter((x) => x.yahooplayerid === Number(transactionPlayer.player_id) && x.gamecodetypeid === codeTypeId);
         }
-        const existingTransactionTypes = await transactionTypesFromDb.rows.filter((x) => x.transactiontypename === transactionPlayer.transaction.type);
+        let existingTransactionTypes = await transactionTypesFromDb.rows.filter((x) => x.transactiontypename === transactionPlayer.transaction.type);
         if (existingTransactionTypes.length === 0) {
           const typeToAdd = {
             transactiontypename: transactionPlayer.transaction.type
           };
           await transactionTypeService.InsertTransactionType(req, res, typeToAdd);
+          transactionTypesFromDb = await transactionTypeService.GetTransactionTypes();
+          existingTransactionTypes = await transactionTypesFromDb.rows.filter((x) => x.transactiontypename === transactionPlayer.transaction.type);
         }
 
         let fantasyteam;
