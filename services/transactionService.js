@@ -4,8 +4,8 @@ import yahooApiService from './yahooApiService.js';
 import playerSerivce from './playerService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 import transactionTypeService from './transactionTypeService.js';
-import seasonService from './seasonService.js';
 import viewService from './viewService.js';
+import positionTypeService from './positionTypeService.js';
 
 const GetLeagueCodes = async () => {
   try {
@@ -34,6 +34,7 @@ const ImportTransactions = async (req, res) => {
   const gameCodeTypes = await gameCodeTypeService.getAllCodeTypes();
   const seasons = await viewService.GetSeasonidLeagueidYahoogamecode();
   const teams = await viewService.GetAllYahooTeamKeys();
+  let positiontypes = await positionTypeService.GetPositionTypes();
   let transactionsToImport = [];
   for (let l = 0; l < leagueCodes.rows.length; l++) {
     const transactions = await yahooApiService.getLeagueTransactions(req, res, leagueCodes.rows[l].leaguecode);
@@ -45,17 +46,29 @@ const ImportTransactions = async (req, res) => {
     const seasonId = season[0].seasonid;
     for (let t = 0; t < transactions.data.transactions.length; t++) {
       const transaction = transactions.data.transactions[t];
+      let playersFromDb = await playerSerivce.GetPlayers();
+      let transactionTypesFromDb = await transactionTypeService.GetTransactionTypes();
       for (let p = 0; p < transaction.players.length; p++) {
         const transactionPlayer = transaction.players[p];
-        let playersFromDb = await playerSerivce.GetPlayers();
-        let transactionTypesFromDb = await transactionTypeService.GetTransactionTypes();
+        let existingPositionType = await positiontypes.rows.filter((x) => x.yahoopositiontype === transactionPlayer.position_type && x.gamecodetypeid === codeTypeId);
+        if (existingPositionType.length === 0) {
+          const positiontypetoadd = {
+            gamecodetypeid: codeTypeId,
+            yahoopositiontype: transactionPlayer.position_type
+          };
+          await positionTypeService.InsertPositionType(positiontypetoadd);
+          positiontypes = await positionTypeService.GetPositionTypes();
+          existingPositionType = await positiontypes.rows.filter((x) => x.yahoopositiontype === transactionPlayer.position_type && x.gamecodetypeid === codeTypeId);
+        }
+
         let existingPlayers = await playersFromDb.rows.filter((x) => x.yahooplayerid === Number(transactionPlayer.player_id) && x.gamecodetypeid === codeTypeId);
         if (existingPlayers.length === 0) {
           const playerToAdd = {
             gamecodetypeid: codeTypeId,
             yahooplayerid: transactionPlayer.player_id,
             firstname: transactionPlayer.name.first,
-            lastname: transactionPlayer.name.last.length > 0 ? transactionPlayer.name.last : 'Defense'
+            lastname: transactionPlayer.name.last.length > 0 ? transactionPlayer.name.last : 'Defense',
+            positiontypeid: existingPositionType[0].positiontypeid
           };
           await playerSerivce.InsertPlayer(req, res, playerToAdd);
           playersFromDb = await playerSerivce.GetPlayers();

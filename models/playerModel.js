@@ -7,7 +7,8 @@ const Player = sql.define({
     'gamecodetypeid',
     'yahooplayerid',
     'firstname',
-    'lastname'
+    'lastname',
+    'positiontypeid'
   ]
 });
 
