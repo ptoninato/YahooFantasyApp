@@ -3,3 +3,4 @@ data/keys.js
 .env*
 !.env.example
 googleAuth.json
+.vscode/launch.json

@@ -16,6 +16,7 @@
         "no-plusplus": 0,
         "max-len": "off",
         "import/extensions": "off",
-        "no-continue": "off"
+        "no-continue": "off",
+        "no-await-in-loop": "off"
     }
 }
