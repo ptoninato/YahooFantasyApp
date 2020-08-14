@@ -17,7 +17,6 @@ async function insertFantasyTeams(fantasyTeams) {
   try {
     const query = fantasyTeamModel.insert(fantasyTeams).returning(fantasyTeamModel.fantasyteamid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error(e);
   } finally {
@@ -51,7 +50,6 @@ const importFantasyTeams = async (req, res) => {
 
       for (let y = 0; y < 1; y++) {
         const owner = owners[y];
-        console.log(owners);
         const ownerFromDb = existingOwners.rows.filter((value) => value.yahooguid === owner.guid);
         const fantasyTeam = {
           leagueid: league[0].leagueid,

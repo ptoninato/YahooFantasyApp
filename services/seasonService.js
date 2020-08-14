@@ -31,7 +31,6 @@ async function insertSeasons(seasons) {
   try {
     const query = seasonModel.insert(seasons).returning(seasonModel.seasonid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error(e);
   } finally {

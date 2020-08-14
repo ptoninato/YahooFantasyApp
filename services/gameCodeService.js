@@ -29,7 +29,6 @@ async function insertYahooGameCodeMultiple(codes) {
   try {
     const query = gameCodeModel.insert(codes).returning(gameCodeModel.gamecodeid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error(e);
   } finally {
@@ -85,7 +84,6 @@ async function importGameCode(req, res) {
 async function insertYahooGameCode(gamecodeTypeId, code) {
   const query = 'insert into gamecode(gamecodetypeid, yahoogamecode, season) values ($1, $2, $3)';
   const values = [gamecodeTypeId, code.game_id, code.season];
-  console.log(values);
   (async () => {
     try {
       await pool.query(query, values);

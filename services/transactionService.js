@@ -21,7 +21,6 @@ async function InsertTransactions(transactions) {
   try {
     const query = transactionModel.insert(transactions).returning(transactionModel.transactionid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows.length);
   } catch (e) {
     console.error(e);
   } finally {

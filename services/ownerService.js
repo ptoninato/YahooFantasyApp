@@ -24,7 +24,6 @@ async function insertOwners(owners) {
   try {
     const query = ownerModel.insert(owners).returning(ownerModel.ownerid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error('fail');
   } finally {
@@ -49,7 +48,6 @@ const importOwners = async (req, res, owners, leagueid) => {
   }
 
   if (ownersToImport.length > 0) {
-    console.log(ownersToImport);
     await insertOwners(ownersToImport);
   }
 };

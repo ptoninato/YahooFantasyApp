@@ -25,10 +25,8 @@ const GetLeagueRecords = async () => {
 
 const insertYahooLeagues = async (leagues) => {
   try {
-    console.log(leagues);
     const query = leagueModel.insert(leagues).returning(leagueModel.leagueid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error(e);
   } finally {

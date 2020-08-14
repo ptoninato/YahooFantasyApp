@@ -35,7 +35,6 @@ async function insertYahooGameCodeTypeMultiple(codes) {
   try {
     const query = gameCodeTypeModel.insert(codes).returning(gameCodeTypeModel.gamecodetypeid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
   } catch (e) {
     console.error(e);
   } finally {
@@ -64,9 +63,6 @@ async function importGameCodeType(req, res) {
       });
     }
   });
-  console.log(typesToInsert);
-  console.log(typesToInsert.length);
-
   if (typesToInsert.length > 0) {
     console.log('types importing');
     await insertYahooGameCodeTypeMultiple(typesToInsert);

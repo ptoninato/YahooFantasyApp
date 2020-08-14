@@ -16,7 +16,6 @@ const InsertTransactionType = async (req, res, type) => {
   try {
     const query = transactionTypeModel.insert(type).returning(transactionTypeModel.transactiontypeid).toQuery();
     const { rows } = await pool.query(query);
-    console.log(rows);
     return rows;
   } catch (e) {
     console.log(e);
