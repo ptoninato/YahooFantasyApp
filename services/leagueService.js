@@ -6,7 +6,7 @@ import gameCodeService from './gameCodeService.js';
 
 const GetDistinctLeagueNames = async () => {
   try {
-    const results = await pool.query('SELECT distinct leaguename FROM leagues');
+    const results = await pool.query('SELECT distinct leaguename FROM league');
     return [...new Set(results.rows.map((item) => item.leaguename))];
   } catch (e) {
     console.log(e);
@@ -24,14 +24,9 @@ const GetLeagueRecords = async () => {
 };
 
 const insertYahooLeagues = async (leagues) => {
-  try {
-    const query = leagueModel.insert(leagues).returning(leagueModel.leagueid).toQuery();
-    const { rows } = await pool.query(query);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    // client.end();
-  }
+  const query = leagueModel.insert(leagues).returning(leagueModel.leagueid).toQuery();
+  const { rows } = await pool.query(query);
+  console.log(rows.length);
 };
 
 async function filterLeagueRecords(leagueRecords) {
@@ -42,7 +37,9 @@ async function filterLeagueRecords(leagueRecords) {
     for (let x = 0; x < leagueRecords[i].leagues.length; x++) {
       const currentLeague = leagueRecords[i].leagues[x][0];
       if (leagues[currentLeague.name]
-        && (existingLeagueNames.length > 0 || !existingLeagueNames.includes(currentLeague.name))) continue;
+        || (existingLeagueNames.includes(currentLeague.name))) {
+        continue;
+      }
       if (currentLeague.name === 'Cerveza Mesa Memorial League' || currentLeague.name === 'The League') {
         const gameCodeType = exisitingGameCodes.rows.filter((value) => value.yahoogamecode === currentLeague.game_code);
         leagues[currentLeague.name] = true;
@@ -60,7 +57,6 @@ const InsertLeagues = async (req, res) => {
   const leagues = await filterLeagueRecords(leagueRecords.data.games);
 
   if (leagues.length > 0) {
-    console.log(leagues);
     await insertYahooLeagues(leagues);
   }
 

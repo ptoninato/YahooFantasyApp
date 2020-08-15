@@ -29,6 +29,7 @@ async function insertYahooGameCodeMultiple(codes) {
   try {
     const query = gameCodeModel.insert(codes).returning(gameCodeModel.gamecodeid).toQuery();
     const { rows } = await pool.query(query);
+    console.log(rows.length);
   } catch (e) {
     console.error(e);
   } finally {

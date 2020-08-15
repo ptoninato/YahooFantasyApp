@@ -15,6 +15,7 @@ async function InsertPositionType(positiontype) {
   try {
     const query = positionTypeModel.insert(positiontype).returning(positionTypeModel.positiontypeid).toQuery();
     const { rows } = await pool.query(query);
+    console.log(rows.length);
   } catch (e) {
     console.error(e);
   } finally {

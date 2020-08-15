@@ -4,9 +4,18 @@ import ownerService from './ownerService.js';
 import leagueService from './leagueService.js';
 import fantasyTeamModel from '../models/fantasyteamModel.js';
 
-const seasonsToImport = async (req, res) => {
+const seasonsToImport = async () => {
   try {
     return await pool.query('select gc.yahoogamecode as gamecode, s.yahooleagueid as league, s.seasonid as seasonid from season as s join gamecode as gc on s.gamecodeid = gc.gamecodeid');
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
+const GetExistingTeams = async () => {
+  try {
+    return await pool.query('select * from fantasyteam');
   } catch (e) {
     console.log(e);
     return e;
@@ -17,6 +26,7 @@ async function insertFantasyTeams(fantasyTeams) {
   try {
     const query = fantasyTeamModel.insert(fantasyTeams).returning(fantasyTeamModel.fantasyteamid).toQuery();
     const { rows } = await pool.query(query);
+    console.log(rows.length);
   } catch (e) {
     console.error(e);
   } finally {
@@ -27,6 +37,7 @@ async function insertFantasyTeams(fantasyTeams) {
 const importFantasyTeams = async (req, res) => {
   const results = await seasonsToImport(req, res);
   const existingLeagues = await leagueService.GetLeagueRecords();
+  const existingTeams = await GetExistingTeams();
   let existingOwners = await ownerService.getOwnersFromDb();
   let uniqueExistingGuids = await ownerService.getYahooGuidsFromDb();
   const seasonCodes = results.rows;
@@ -34,7 +45,7 @@ const importFantasyTeams = async (req, res) => {
   const fantasyTeamsToImport = [];
   for (let i = 0; i < seasonCodes.length; i++) {
     const currentSeason = seasonCodes[i];
-    const yahooLeague = `${currentSeason.gamecode}.l.${currentSeason.league}`
+    const yahooLeague = `${currentSeason.gamecode}.l.${currentSeason.league}`;
     const apiData = await yahooApiService.getLeagueTeams(req, res, yahooLeague);
     const season = apiData.data;
     const league = existingLeagues.rows.filter((value) => value.leaguename === season.name);
@@ -51,6 +62,8 @@ const importFantasyTeams = async (req, res) => {
       for (let y = 0; y < 1; y++) {
         const owner = owners[y];
         const ownerFromDb = existingOwners.rows.filter((value) => value.yahooguid === owner.guid);
+        const existingSeason = existingTeams.rows.filter((value) => value.leagueid === league[0].leagueid && value.seasonid === currentSeason.seasonid && value.ownerid === ownerFromDb[0].ownerid);
+        if (existingSeason.length > 0) continue;
         const fantasyTeam = {
           leagueid: league[0].leagueid,
           seasonid: currentSeason.seasonid,
@@ -64,7 +77,9 @@ const importFantasyTeams = async (req, res) => {
     }
   }
 
-  await insertFantasyTeams(fantasyTeamsToImport);
+  if (fantasyTeamsToImport.length > 0) {
+    await insertFantasyTeams(fantasyTeamsToImport);
+  }
 
   return fantasyTeamsToImport;
 };

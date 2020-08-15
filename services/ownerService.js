@@ -24,6 +24,7 @@ async function insertOwners(owners) {
   try {
     const query = ownerModel.insert(owners).returning(ownerModel.ownerid).toQuery();
     const { rows } = await pool.query(query);
+    console.log(rows.length);
   } catch (e) {
     console.error('fail');
   } finally {

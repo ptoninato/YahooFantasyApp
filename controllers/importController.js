@@ -15,12 +15,37 @@ function ImportController() {
   }
 
   async function importAll(req, res) {
-    console.log('start type');
-    let data = await gameCodeTypeService.importGameCodeType(req, res);
-    data = await gameCodeService.importGameCode(req, res);
-    data = await leagueService.InsertLeagues(req, res);
-    data = await sesaonService.importSeasons(req, res);
-    res.render('secret.ejs', { data });
+    try {
+      console.log('start type');
+      let data = await gameCodeTypeService.importGameCodeType(req, res);
+      console.log('end type');
+
+      console.log('start gamecode');
+      data = await gameCodeService.importGameCode(req, res);
+      console.log('end gamecode');
+
+      console.log('start leagues');
+      data = await leagueService.InsertLeagues(req, res);
+      console.log('end leagues');
+
+      console.log('start seasons');
+      data = await sesaonService.importSeasons(req, res);
+      console.log('end seasons');
+
+      console.log('start fantasy teams');
+      data = await fantasyTeamService.importFantasyTeams(req, res);
+      console.log('end fantasy teams');
+
+      console.log('start transactions');
+      data = await transactionService.ImportTransactions(req, res);
+      console.log('end transactions');
+
+      data = 'Import Complete';
+
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async function importLeagues(req, res) {

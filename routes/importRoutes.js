@@ -21,7 +21,7 @@ function importRoutes(req, res) {
   importRouter.route('/importTeams')
     .get(controller.importTeams);
 
-    importRouter.route('/importTransactions')
+  importRouter.route('/importTransactions')
     .get(controller.importTransactions);
 
   return importRouter;

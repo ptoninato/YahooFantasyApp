@@ -31,8 +31,9 @@ async function InsertTransactions(transactions) {
   try {
     const query = transactionModel.insert(transactions).returning(transactionModel.transactionid).toQuery();
     const { rows } = await pool.query(query);
+    console.log(rows.length);
   } catch (e) {
-    console.error('fail');
+    console.error(e);
   } finally {
     // client.end();
   }
@@ -68,6 +69,7 @@ const ImportTransactions = async (req, res) => {
               gamecodetypeid: codeTypeId,
               yahoopositiontype: transactionPlayer.position_type
             };
+            console.log('importing position type');
             await positionTypeService.InsertPositionType(positiontypetoadd);
             positiontypes = await positionTypeService.GetPositionTypes();
             existingPositionType = await positiontypes.rows.filter((x) => x.yahoopositiontype === transactionPlayer.position_type && x.gamecodetypeid === codeTypeId);
@@ -82,6 +84,7 @@ const ImportTransactions = async (req, res) => {
               lastname: transactionPlayer.name.last.length > 0 ? transactionPlayer.name.last : 'Defense',
               positiontypeid: existingPositionType[0].positiontypeid
             };
+            console.log('importing player');
             await playerSerivce.InsertPlayer(req, res, playerToAdd);
             playersFromDb = await playerSerivce.GetPlayers();
             existingPlayers = await playersFromDb.rows.filter((x) => x.yahooplayerid === Number(transactionPlayer.player_id) && x.gamecodetypeid === codeTypeId);
