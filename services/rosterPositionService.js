@@ -12,4 +12,4 @@ async function GetExistingSeasonRosterPositions() {
 
 export default {
   GetExistingSeasonRosterPositions
-}
+};

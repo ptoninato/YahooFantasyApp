@@ -24,8 +24,11 @@ function importRoutes(req, res) {
   importRouter.route('/importTransactions')
     .get(controller.importTransactions);
 
-  importRouter.route('/importMatchups')
-    .get(controller.importMatchups);
+  importRouter.route('/importSeasonPositions')
+    .get(controller.ImportSeasonPositions);
+  
+  importRouter.route('/importStatCategories')
+    .get(controller.ImportStatCategories);
 
   return importRouter;
 }

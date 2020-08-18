@@ -52,7 +52,6 @@ const ImportTransactions = async (req, res) => {
     const leagueCodeType = transactions.data.game_code;
     const dbCodeTypeResults = gameCodeTypes.rows.filter((value) => value.yahoogamecode === leagueCodeType);
     const codeTypeId = dbCodeTypeResults[0].gamecodetypeid;
-    console.log(transactions.data.league_id);
     const season = seasons.rows.filter((x) => x.yahooleagueid === Number(transactions.data.league_id));
     const seasonId = season[0].seasonid;
     for (let t = 0; t < transactions.data.transactions.length; t++) {
