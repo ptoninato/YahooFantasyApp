@@ -30,6 +30,16 @@ async function getLeagueTransactions(req, res, leaguekey) {
   return res;
 }
 
+async function getLeagueSettings(req, res, leaguekey) {
+  const returnData = await req.app.yf.league.settings(leaguekey);
+  res.data = returnData;
+  return res;
+}
+
 export default {
-  getUserGameFromYahoo, getUserLeaguesFromYahoo, getLeagueTeams, getLeagueTransactions
+  getUserGameFromYahoo,
+  getUserLeaguesFromYahoo,
+  getLeagueTeams,
+  getLeagueTransactions,
+  getLeagueSettings
 };

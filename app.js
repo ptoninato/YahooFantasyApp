@@ -70,7 +70,7 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/import/importAll');
+  res.redirect('/import/importMatchups');
 });
 
 app.get('/database', async (req, res) => {
@@ -79,7 +79,6 @@ app.get('/database', async (req, res) => {
   console.log(queryResult);
   res.redirect('/');
 });
-
 
 // Secret route
 app.get('/secret', isUserAuthenticated, async (req, res) => ('secret.ejs'));

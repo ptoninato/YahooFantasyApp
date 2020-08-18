@@ -4,6 +4,7 @@ import leagueService from '../services/leagueService.js';
 import sesaonService from '../services/seasonService.js';
 import fantasyTeamService from '../services/fantasyTeamService.js';
 import transactionService from '../services/transactionService.js';
+import matchupService from '../services/matchupService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -68,13 +69,25 @@ function ImportController() {
     res.render('secret.ejs', { data });
   }
 
+  async function importMatchups(req, res) {
+    // const data = await req.app.yf.team.stats('380.l.1020118.t.1', 10);
+    try {
+      const data = await matchupService.importMatchups(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
     importLeagues,
     importSeasons,
     importTeams,
-    importTransactions
+    importTransactions,
+    importMatchups
   };
 }
 

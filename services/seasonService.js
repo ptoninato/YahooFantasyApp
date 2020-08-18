@@ -88,5 +88,6 @@ const importSeasons = async (req, res) => {
 
 export default {
   importSeasons,
-  getSeasonIdYahooLeagueIdAndGameCodeId
+  getSeasonIdYahooLeagueIdAndGameCodeId,
+  getExistingSeasons
 };

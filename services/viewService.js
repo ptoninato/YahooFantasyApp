@@ -18,4 +18,14 @@ const GetSeasonidLeagueidYahoogamecode = async (req, res) => {
   }
 };
 
-export default { GetAllYahooTeamKeys, GetSeasonidLeagueidYahoogamecode };
+const GetYahooLeagueCodes = async (req, res) => {
+  try {
+    return await pool.query('select * from yahooleaguecode');
+  } catch (e) {
+    console.log(e);
+    return e;
+  }
+};
+
+
+export default { GetAllYahooTeamKeys, GetSeasonidLeagueidYahoogamecode, GetYahooLeagueCodes };
