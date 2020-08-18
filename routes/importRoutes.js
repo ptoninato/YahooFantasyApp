@@ -26,7 +26,7 @@ function importRoutes(req, res) {
 
   importRouter.route('/importSeasonPositions')
     .get(controller.ImportSeasonPositions);
-  
+
   importRouter.route('/importStatCategories')
     .get(controller.ImportStatCategories);
 

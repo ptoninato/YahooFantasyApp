@@ -29,20 +29,19 @@ const ImportSeasonPositions = async (req, res) => {
     let leagueSettings;
     try {
       leagueSettings = await yahooApiService.getLeagueSettings(req, res, leagueCode.leaguecode);
-    } catch {
+    } catch (e) {
+      console.log(e);
       continue;
     }
-
     if (leagueSettings.data.settings.trade_end_date && season.tradeenddate === null) {
       // const date = new Date(leagueSettings.data.settings.trade_end_date);
       const query = `update season set tradeenddate = '${leagueSettings.data.settings.trade_end_date}' where seasonid = ${season.seasonid};`;
       const tradeUpdateResults = await pool.query(query);
     }
 
-    if (leagueSettings.data.settings.playoffstartdate) {
-      const playoffstartweek = await pool.query(`update season set playoffstartdate = ${leagueSettings.data.settings.playoffstartdate} where seasonid = ${season.seasonid}`);
+    if (leagueSettings.data.settings.playoff_start_week) {
+      const playoffstartweek = await pool.query(`update season set playoffstartweek = '${leagueSettings.data.settings.playoff_start_week}' where seasonid = ${season.seasonid}`);
     }
-
     const rosterpositions = leagueSettings.data.settings.roster_positions;
     for (let r = 0; r < rosterpositions.length; r++) {
       const rosterposition = rosterpositions[r];
@@ -88,7 +87,6 @@ const ImportSeasonPositions = async (req, res) => {
       const results = await pool.query(query, seasonPosition);
     }
   }
-  console.log(existingSeasonRosterPositions);
 };
 
 export default {
