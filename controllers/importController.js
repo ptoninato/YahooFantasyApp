@@ -75,6 +75,7 @@ function ImportController() {
       const data = await matchupService.importMatchups(req, res);
       res.render('secret.ejs', { data });
     } catch (e) {
+      console.log(e);
       const data = e;
       res.render('secret.ejs', { data });
     }
