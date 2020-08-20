@@ -30,6 +30,12 @@ function importRoutes(req, res) {
   importRouter.route('/importStatCategories')
     .get(controller.ImportStatCategories);
 
+  importRouter.route('/importStatModifiers')
+    .get(controller.ImportStatModifiers);
+
+  importRouter.route('/importMatchups')
+    .get(controller.ImportMatchups);
+
   return importRouter;
 }
 

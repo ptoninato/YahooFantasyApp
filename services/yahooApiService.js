@@ -36,10 +36,16 @@ async function getLeagueSettings(req, res, leaguekey) {
   return res;
 }
 
+async function getLeagueScoreboardByWeek(req, res, leaguekey, week) {
+  const returnData = await req.app.yf.league.scoreboard(leaguekey, week);
+  return returnData;
+}
+
 export default {
   getUserGameFromYahoo,
   getUserLeaguesFromYahoo,
   getLeagueTeams,
   getLeagueTransactions,
-  getLeagueSettings
+  getLeagueSettings,
+  getLeagueScoreboardByWeek
 };

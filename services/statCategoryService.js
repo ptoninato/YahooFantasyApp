@@ -9,7 +9,9 @@ import seasonPositionService from './seasonPositionService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 
 const GetStatCategory = async () => {
-  const results = await pool.query('select * from seasonstatcategory');
+  const results = await pool.query(`select ssc.*, gc.gamecodetypeid from seasonstatcategory as ssc 
+  join season as s on s.seasonid = ssc.seasonid
+  join gamecode as gc on s.gamecodeid = gc.gamecodeid `);
   return results;
 };
 
@@ -88,5 +90,7 @@ const ImportStatCategories = async (req, res) => {
 };
 
 export default {
-  ImportStatCategories
+  ImportStatCategories,
+  GetStatCategory,
+  GetStatCategoryType
 };
