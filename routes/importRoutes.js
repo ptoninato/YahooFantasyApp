@@ -36,6 +36,9 @@ function importRoutes(req, res) {
   importRouter.route('/importMatchups')
     .get(controller.ImportMatchups);
 
+  importRouter.route('/importMatchupTeams')
+    .get(controller.ImportMatchupTeams);
+
   return importRouter;
 }
 

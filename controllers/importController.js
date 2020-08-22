@@ -8,6 +8,7 @@ import seasonPositionService from '../services/seasonPositionService.js';
 import statCategoryService from '../services/statCategoryService.js';
 import matchupService from '../services/matchupService.js';
 import seasonStatModifier from '../services/seasonStatModifierService.js';
+import matchupTeamService from '../services/matchupTeamService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -68,8 +69,13 @@ function ImportController() {
   }
 
   async function importTransactions(req, res) {
-    const data = await transactionService.ImportTransactions(req, res);
+    const data = 'Transaction Import Started';
     res.render('secret.ejs', { data });
+    try {
+      transactionService.ImportTransactions(req, res);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async function ImportSeasonPositions(req, res) {
@@ -120,6 +126,17 @@ function ImportController() {
     }
   }
 
+  async function ImportMatchupTeams(req, res) {
+    try {
+      const data = await matchupTeamService.ImportMatchupTeam(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
@@ -130,7 +147,8 @@ function ImportController() {
     ImportSeasonPositions,
     ImportStatCategories,
     ImportStatModifiers,
-    ImportMatchups
+    ImportMatchups,
+    ImportMatchupTeams
   };
 }
 
