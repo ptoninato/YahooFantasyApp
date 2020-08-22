@@ -45,6 +45,27 @@ function ImportController() {
       data = await transactionService.ImportTransactions(req, res);
       console.log('end transactions');
 
+      console.log('start import season positions');
+      data = await seasonPositionService.ImportSeasonPositions(req, res);
+      console.log('end import season positions');
+
+      console.log('start ImportStatCategories');
+      data = await statCategoryService.ImportStatCategories(req, res);
+      console.log('end ImportStatCategories');
+
+      console.log('start ImportStatModifiers');
+      data = await seasonStatModifier.ImportSeasonStatModifiers(req, res);
+      console.log('end ImportStatModifiers');
+
+
+      console.log('start ImportMatchups');
+      data = await matchupService.ImportMatchupTeam(req, res);
+      console.log('end ImportMatchups');
+
+      console.log('start ImportMatchupTeams');
+      data = await matchupService.ImportMatchupTeam(req, res);
+      console.log('end ImportMatchupTeams');
+
       data = 'Import Complete';
 
       res.render('secret.ejs', { data });
