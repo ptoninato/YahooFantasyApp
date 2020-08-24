@@ -6,7 +6,7 @@ import gameCodeService from './gameCodeService.js';
 
 async function getExistingSeasons() {
   try {
-    const results = await pool.query('SELECT * FROM season');
+    const results = await pool.query('SELECT * FROM season order by leagueid desc, startdate desc');
     return results.rows;
   } catch (e) {
     console.log(e);

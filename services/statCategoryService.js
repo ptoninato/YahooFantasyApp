@@ -15,6 +15,13 @@ const GetStatCategory = async () => {
   return results;
 };
 
+const GetStatCategorySeasonIdYahooCategoryId = async () => {
+  const results = await pool.query(`select s.seasonstatcategoryid, s.seasonid, s2.name, s2.yahoocategoryid from seasonstatcategory s 
+  join seasonstatcategorytype s2 on s.seasonstatcategorytypeid = s2.seasonstatcategorytypeid 
+  `);
+  return results;
+};
+
 const GetStatCategoryType = async () => {
   const results = await pool.query('select * from seasonstatcategorytype');
   return results;
@@ -92,5 +99,6 @@ const ImportStatCategories = async (req, res) => {
 export default {
   ImportStatCategories,
   GetStatCategory,
-  GetStatCategoryType
+  GetStatCategoryType,
+  GetStatCategorySeasonIdYahooCategoryId
 };

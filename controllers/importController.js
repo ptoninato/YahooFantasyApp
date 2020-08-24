@@ -9,6 +9,7 @@ import statCategoryService from '../services/statCategoryService.js';
 import matchupService from '../services/matchupService.js';
 import seasonStatModifier from '../services/seasonStatModifierService.js';
 import matchupTeamService from '../services/matchupTeamService.js';
+import matchupCategoryService from '../services/matchupCategoryService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -158,6 +159,18 @@ function ImportController() {
     }
   }
 
+
+  async function ImportMatchupCategories(req, res) {
+    try {
+      const data = await matchupCategoryService.ImportMatchupCategories(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
@@ -169,7 +182,8 @@ function ImportController() {
     ImportStatCategories,
     ImportStatModifiers,
     ImportMatchups,
-    ImportMatchupTeams
+    ImportMatchupTeams,
+    ImportMatchupCategories
   };
 }
 
