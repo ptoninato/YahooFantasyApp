@@ -86,6 +86,7 @@ function ImportController() {
   }
 
   async function importTeams(req, res) {
+    console.log('Import Teams');
     const data = await fantasyTeamService.importFantasyTeams(req, res);
     res.render('secret.ejs', { data });
   }

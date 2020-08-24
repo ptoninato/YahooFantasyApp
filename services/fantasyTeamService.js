@@ -46,7 +46,13 @@ const importFantasyTeams = async (req, res) => {
   for (let i = 0; i < seasonCodes.length; i++) {
     const currentSeason = seasonCodes[i];
     const yahooLeague = `${currentSeason.gamecode}.l.${currentSeason.league}`;
-    const apiData = await yahooApiService.getLeagueTeams(req, res, yahooLeague);
+    let apiData;
+    try {
+      apiData = await yahooApiService.getLeagueTeams(req, res, yahooLeague);
+    } catch(e) {
+      console.log(e);
+      break;
+    }
     const season = apiData.data;
     const league = existingLeagues.rows.filter((value) => value.leaguename === season.name);
     for (let x = 0; x < season.teams.length; x++) {
