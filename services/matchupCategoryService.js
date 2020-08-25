@@ -70,11 +70,8 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
 
           const existingMatchupResult = matchupCategoryResults.rows.filter((value) => value.matchupid === matchupsForTeams[0].matchupid && value.seasonstatcategoryid === statCategory[0].seasonstatcategoryid);
 
-          // if (statWinner.stat_winner.is_tied) {
-          //   console.log(matchupsForTeams[0].matchupid);
-          //   console.log(statWinner);
-          //   console.log(existingMatchupResult);
-          // }
+          const dbTeam1Matchup = matchupTeamsForWeek.filter((value) => value.fantasyteamid === dbTeam1.fantasyteamid)[0];
+          const dbTeam2Matchup = matchupTeamsForWeek.filter((value) => value.fantasyteamid === dbTeam2.fantasyteamid)[0];
 
           if (existingMatchupResult.length === 0) {
             console.log(statWinner);
@@ -95,13 +92,13 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
                 console.log('fail');
                 continue;
               }
-              const winningTeam = statWinner.stat_winner.winner_team_key === dbTeam1.team_key ? dbTeam1 : dbTeam2;
-              const losingTeam = winningTeam.team_key === dbTeam1.team_key ? dbTeam2 : dbTeam1;
+              const winningTeam = statWinner.stat_winner.winner_team_key === dbTeam1.team_key ? dbTeam1Matchup : dbTeam2Matchup;
+              const losingTeam = winningTeam.team_key === dbTeam1.team_key ? dbTeam2Matchup : dbTeam1Matchup;
               const matchupCategoryResult = [
                 matchupsForTeams[0].matchupid,
                 statCategory[0].seasonstatcategoryid,
-                winningTeam.fantasyteamid,
-                losingTeam.fantasyteamid
+                winningTeam.matchupteamid,
+                losingTeam.matchupteamid
               ];
               console.log(matchupCategoryResult);
               console.log(`Adding matchup category result for week ${w} matchup between ${dbTeam1.teamname} and ${dbTeam2.teamname}`);
@@ -112,7 +109,31 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
           }
         }
       }
-      for (let t = 0; t < yahooMatchup.teams.length; t++) { }
+      for (let t = 0; t < yahooMatchup.teams.length; t++) { 
+        const yahooTeam = yahooMatchup.teams[t];
+        const dbTeam = teams.rows.filter((value) => value.team_key === yahooTeam.team_key)[0];
+        const matchupTeam = matchupTeamsForWeek.filter((value) => value.fantasyteamid === dbTeam.fantasyteamid)[0];
+
+        for (let y = 0; y < yahooTeam.stats.length; y++) {
+          const yahooStat = yahooTeam.stats[y];
+          const statCategory = statCategories.rows.filter((value) => value.seasonid === season.seasonid && value.yahoocategoryid === Number(yahooStat.stat_id))[0];
+
+          const existingCategoryTeam = matchupCategoryTeams.rows.filter((value) => value.matchupteamid === matchupTeam.matchupteamid && value.seasonstatcategoryid === statCategory.seasonstatcategoryid);
+
+          if (existingCategoryTeam.length === 0) {
+            const categoryTeam = [
+              yahooStat.value,
+              matchupTeam.matchupteamid,
+              statCategory.seasonstatcategoryid
+            ];
+
+            console.log(`Adding matchup category team for week ${w} for ${matchupTeam.matchupteamid}/statid ${statCategory.seasonstatcategoryid}`);
+            const query = 'INSERT INTO matchupcategoryteam(value, matchupteamid, seasonstatcategoryid) VALUES($1, $2, $3)';
+            const results = await pool.query(query, categoryTeam);
+            console.log('---------------');
+          }
+        }
+      }
     }
   }
 };

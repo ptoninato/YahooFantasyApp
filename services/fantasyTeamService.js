@@ -49,9 +49,9 @@ const importFantasyTeams = async (req, res) => {
     let apiData;
     try {
       apiData = await yahooApiService.getLeagueTeams(req, res, yahooLeague);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
-      break;
+      continue;
     }
     const season = apiData.data;
     const league = existingLeagues.rows.filter((value) => value.leaguename === season.name);
@@ -68,7 +68,7 @@ const importFantasyTeams = async (req, res) => {
       for (let y = 0; y < 1; y++) {
         const owner = owners[y];
         const ownerFromDb = existingOwners.rows.filter((value) => value.yahooguid === owner.guid);
-        const existingSeason = existingTeams.rows.filter((value) => value.leagueid === league[0].leagueid && value.seasonid === currentSeason.seasonid && value.ownerid === ownerFromDb[0].ownerid);
+        const existingSeason = existingTeams.rows.filter((value) => value.leagueid === league[0].leagueid && value.seasonid === currentSeason.seasonid && (value.ownerid === ownerFromDb[0].ownerid || value.teamname === currentTeam.name));
         if (existingSeason.length > 0) continue;
         const fantasyTeam = {
           leagueid: league[0].leagueid,
