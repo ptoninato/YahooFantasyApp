@@ -70,7 +70,7 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/import/ImportMatchupCategories');
+  res.redirect('/import/ImportMatchupRoster');
 });
 
 app.get('/database', async (req, res) => {

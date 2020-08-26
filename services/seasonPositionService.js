@@ -6,6 +6,12 @@ import gamecodeService from './gameCodeService.js';
 import seasonRosterPositionService from './rosterPositionService.js';
 import positionTypeService from './positionTypeService.js';
 
+const GetSeasonPositionsWithYahooCode = async () => {
+  const results = await pool.query(`  select s.seasonstatcategoryid, seasonid, s2.yahoocategoryid from seasonstatcategory s 
+join seasonstatcategorytype s2 on s.seasonstatcategorytypeid = s2.seasonstatcategorytypeid `);
+  return results;
+};
+
 const GetSeasonPosition = async () => {
   const results = await pool.query('select * from seasonstatmodifier');
   return results;
@@ -91,5 +97,6 @@ const ImportSeasonPositions = async (req, res) => {
 
 export default {
   ImportSeasonPositions,
-  GetSeasonPosition
+  GetSeasonPosition,
+  GetSeasonPositionsWithYahooCode
 };
