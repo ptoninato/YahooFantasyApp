@@ -67,6 +67,10 @@ function ImportController() {
       data = await matchupService.ImportMatchupTeam(req, res);
       console.log('end ImportMatchupTeams');
 
+      console.log('start ImportMatchupCategories');
+      data = await matchupCategoryService.ImportMatchupCategories(req, res);
+      console.log('end ImportMatchupCategories');
+
       data = 'Import Complete';
 
       res.render('secret.ejs', { data });

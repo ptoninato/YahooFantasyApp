@@ -39,7 +39,7 @@ function importRoutes(req, res) {
   importRouter.route('/importMatchupTeams')
     .get(controller.ImportMatchupTeams);
 
-    importRouter.route('/importMatchupCategories')
+  importRouter.route('/importMatchupCategories')
     .get(controller.ImportMatchupCategories);
 
   return importRouter;
