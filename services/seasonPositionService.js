@@ -7,8 +7,8 @@ import seasonRosterPositionService from './rosterPositionService.js';
 import positionTypeService from './positionTypeService.js';
 
 const GetSeasonPositionsWithYahooCode = async () => {
-  const results = await pool.query(`  select s.seasonstatcategoryid, seasonid, s2.yahoocategoryid from seasonstatcategory s 
-join seasonstatcategorytype s2 on s.seasonstatcategorytypeid = s2.seasonstatcategorytypeid `);
+  const results = await pool.query(`select s.seasonpositionid, s.seasonid, r.positionname from seasonposition s 
+  join rosterposition r on s.rosterpositionid = r.rosterpositionid `);
   return results;
 };
 
