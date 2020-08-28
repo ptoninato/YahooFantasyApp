@@ -1,4 +1,4 @@
-import pool from './db.js';
+import pool from '../db.js';
 
 const GetSeasonWeeks = async () => {
   const results = await pool.query('select * from seasonweek');

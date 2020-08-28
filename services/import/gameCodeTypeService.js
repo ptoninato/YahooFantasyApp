@@ -1,6 +1,6 @@
-import pool from './db.js';
+import pool from '../db.js';
 import yahooService from './yahooApiService.js';
-import gameCodeTypeModel from '../models/gamecodeTypeModel.js';
+import gameCodeTypeModel from '../../models/gamecodeTypeModel.js';
 
 async function getAllCodeTypes() {
   try {

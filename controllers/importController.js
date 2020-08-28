@@ -1,20 +1,20 @@
 import pool from '../services/db.js';
-import gameCodeTypeService from '../services/gameCodeTypeService.js';
-import gameCodeService from '../services/gameCodeService.js';
-import leagueService from '../services/leagueService.js';
-import sesaonService from '../services/seasonService.js';
-import fantasyTeamService from '../services/fantasyTeamService.js';
-import transactionService from '../services/transactionService.js';
-import seasonPositionService from '../services/seasonPositionService.js';
-import statCategoryService from '../services/statCategoryService.js';
-import matchupService from '../services/matchupService.js';
-import seasonStatModifier from '../services/seasonStatModifierService.js';
-import matchupTeamService from '../services/matchupTeamService.js';
-import matchupCategoryService from '../services/matchupCategoryService.js';
-import matchupRosterService from '../services/matchupRosterService.js';
-import matchupRosterPlayStatService from '../services/matchupRosterPlayerStat.js';
-import draftService from '../services/draftService.js';
-import standingsService from '../services/standingsService.js';
+import gameCodeTypeService from '../services/import/gameCodeTypeService.js';
+import gameCodeService from '../services/import/gameCodeService.js';
+import leagueService from '../services/import/leagueService.js';
+import sesaonService from '../services/import/seasonService.js';
+import fantasyTeamService from '../services/import/fantasyTeamService.js';
+import transactionService from '../services/import/transactionService.js';
+import seasonPositionService from '../services/import/seasonPositionService.js';
+import statCategoryService from '../services/import/statCategoryService.js';
+import matchupService from '../services/import/matchupService.js';
+import seasonStatModifier from '../services/import/seasonStatModifierService.js';
+import matchupTeamService from '../services/import/matchupTeamService.js';
+import matchupCategoryService from '../services/import/matchupCategoryService.js';
+import matchupRosterService from '../services/import/matchupRosterService.js';
+import matchupRosterPlayStatService from '../services/import/matchupRosterPlayerStat.js';
+import draftService from '../services/import/draftService.js';
+import standingsService from '../services/import/standingsService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {

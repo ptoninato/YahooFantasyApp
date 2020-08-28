@@ -1,7 +1,7 @@
 import fs from 'fs';
 import moment from 'moment';
 import opn from 'opn';
-import pool from './db.js';
+import pool from '../db.js';
 import yahooApiService from './yahooApiService.js';
 
 let existingMatchupPlayerStats;

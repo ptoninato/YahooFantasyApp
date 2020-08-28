@@ -1,6 +1,6 @@
-import pool from './db.js';
+import pool from '../db.js';
 import yahooApiService from './yahooApiService.js';
-import viewService from './viewService.js';
+import viewService from '../viewService.js';
 import statCategoryService from './statCategoryService.js';
 
 const GetSeasonStatModifer = async () => {

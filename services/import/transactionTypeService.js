@@ -1,5 +1,5 @@
-import pool from './db.js';
-import transactionTypeModel from '../models/transacitonTypeModel.js';
+import pool from '../db.js';
+import transactionTypeModel from '../../models/transacitonTypeModel.js';
 
 const GetTransactionTypes = async () => {
   try {

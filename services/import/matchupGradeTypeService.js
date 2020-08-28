@@ -1,4 +1,4 @@
-import pool from './db.js';
+import pool from '../db.js';
 
 const GetMatchupGradeTypes = async () => {
   const results = await pool.query('select * from matchupgradetype');

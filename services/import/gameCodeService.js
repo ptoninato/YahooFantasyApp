@@ -1,5 +1,5 @@
 import pg from 'pg';
-import gameCodeModel from '../models/gamecodeModel.js';
+import gameCodeModel from '../../models/gamecodeModel.js';
 import yahooApiService from './yahooApiService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 

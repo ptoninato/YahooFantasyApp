@@ -1,5 +1,5 @@
-import pool from './db.js';
-import leagueModel from '../models/leagueModel.js';
+import pool from '../db.js';
+import leagueModel from '../../models/leagueModel.js';
 import yahooApiService from './yahooApiService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 import gameCodeService from './gameCodeService.js';

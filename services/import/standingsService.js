@@ -1,6 +1,6 @@
-import pool from './db.js';
+import pool from '../db.js';
 import yahooApiService from './yahooApiService.js';
-import viewService from './viewService.js';
+import viewService from '../viewService.js';
 import matchupGradeTypeService from './matchupGradeTypeService.js';
 
 const ImportStandings = async (req, res) => {

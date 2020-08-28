@@ -1,8 +1,8 @@
-import pool from './db.js';
+import pool from '../db.js';
 import yahooApiService from './yahooApiService.js';
 import ownerService from './ownerService.js';
 import leagueService from './leagueService.js';
-import fantasyTeamModel from '../models/fantasyteamModel.js';
+import fantasyTeamModel from '../../models/fantasyteamModel.js';
 
 const seasonsToImport = async () => {
   try {

@@ -1,10 +1,10 @@
-import pool from './db.js';
-import transactionModel from '../models/transactionModel.js';
+import pool from '../db.js';
+import transactionModel from '../../models/transactionModel.js';
 import yahooApiService from './yahooApiService.js';
 import playerSerivce from './playerService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';
 import transactionTypeService from './transactionTypeService.js';
-import viewService from './viewService.js';
+import viewService from '../viewService.js';
 import positionTypeService from './positionTypeService.js';
 
 const GetSeasonAndTransactionIds = async () => {
