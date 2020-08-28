@@ -51,6 +51,9 @@ function importRoutes(req, res) {
   importRouter.route('/importDrafts')
     .get(controller.ImportDrafts);
 
+  importRouter.route('/importStandings')
+    .get(controller.ImportStandings);
+
   return importRouter;
 }
 

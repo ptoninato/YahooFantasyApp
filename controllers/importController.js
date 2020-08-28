@@ -13,6 +13,7 @@ import matchupCategoryService from '../services/matchupCategoryService.js';
 import matchupRosterService from '../services/matchupRosterService.js';
 import matchupRosterPlayStatService from '../services/matchupRosterPlayerStat.js';
 import draftService from '../services/draftService.js';
+import standingsService from '../services/standingsService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -73,6 +74,10 @@ function ImportController() {
       console.log('start ImportMatchupCategories');
       data = await matchupCategoryService.ImportMatchupCategories(req, res);
       console.log('end ImportMatchupCategories');
+
+      console.log('start ImportDraft');
+      data = await draftService.ImportDrafts(req, res);
+      console.log('end ImportDraft');
 
       data = 'Import Complete';
 
@@ -211,6 +216,17 @@ function ImportController() {
     }
   }
 
+  async function ImportStandings(req, res) {
+    try {
+      const data = await standingsService.ImportStandings(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
+
   return {
     importBothGameTypeAndGame,
     importAll,
@@ -226,7 +242,8 @@ function ImportController() {
     ImportMatchupCategories,
     ImportMatchupRoster,
     ImportMatchupRosterPlayerStat,
-    ImportDrafts
+    ImportDrafts,
+    ImportStandings
   };
 }
 

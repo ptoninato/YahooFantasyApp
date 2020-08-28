@@ -61,6 +61,11 @@ async function GetPlayer(req, res, playerKey) {
   return returnData;
 }
 
+async function GetStandings(req, res, leagueKey) {
+  const returnData = await req.app.yf.league.standings(leagueKey);
+  return returnData;
+}
+
 export default {
   getUserGameFromYahoo,
   getUserLeaguesFromYahoo,
@@ -71,5 +76,6 @@ export default {
   GetRoster,
   GetPlayerStats,
   GetDraft,
-  GetPlayer
+  GetPlayer,
+  GetStandings
 };
