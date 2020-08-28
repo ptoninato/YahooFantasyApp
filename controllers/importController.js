@@ -12,6 +12,7 @@ import matchupTeamService from '../services/matchupTeamService.js';
 import matchupCategoryService from '../services/matchupCategoryService.js';
 import matchupRosterService from '../services/matchupRosterService.js';
 import matchupRosterPlayStatService from '../services/matchupRosterPlayerStat.js';
+import draftService from '../services/draftService.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -199,6 +200,16 @@ function ImportController() {
     }
   }
 
+  async function ImportDrafts(req, res) {
+    try {
+      const data = await draftService.importDrafts(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
 
   return {
     importBothGameTypeAndGame,
@@ -214,7 +225,8 @@ function ImportController() {
     ImportMatchupTeams,
     ImportMatchupCategories,
     ImportMatchupRoster,
-    ImportMatchupRosterPlayerStat
+    ImportMatchupRosterPlayerStat,
+    ImportDrafts
   };
 }
 

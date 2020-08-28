@@ -46,9 +46,18 @@ async function GetRoster(req, res, teamkey, weekOrDay) {
   return returnData;
 }
 
-
 async function GetPlayerStats(req, res, playerKey, week) {
   const returnData = await req.app.yf.player.stats(playerKey, week);
+  return returnData;
+}
+
+async function GetDraft(req, res, leagueKey) {
+  const returnData = await req.app.yf.league.draft_results(leagueKey);
+  return returnData;
+}
+
+async function GetPlayer(req, res, playerKey) {
+  const returnData = await req.app.yf.player.meta(playerKey);
   return returnData;
 }
 
@@ -60,5 +69,7 @@ export default {
   getLeagueSettings,
   getLeagueScoreboardByWeek,
   GetRoster,
-  GetPlayerStats
+  GetPlayerStats,
+  GetDraft,
+  GetPlayer
 };
