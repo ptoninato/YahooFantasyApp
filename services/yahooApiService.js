@@ -46,6 +46,12 @@ async function GetRoster(req, res, teamkey, weekOrDay) {
   return returnData;
 }
 
+
+async function GetPlayerStats(req, res, playerKey, week) {
+  const returnData = await req.app.yf.player.stats(playerKey, week);
+  return returnData;
+}
+
 export default {
   getUserGameFromYahoo,
   getUserLeaguesFromYahoo,
@@ -53,5 +59,6 @@ export default {
   getLeagueTransactions,
   getLeagueSettings,
   getLeagueScoreboardByWeek,
-  GetRoster
+  GetRoster,
+  GetPlayerStats
 };

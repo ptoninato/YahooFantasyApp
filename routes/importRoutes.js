@@ -45,6 +45,9 @@ function importRoutes(req, res) {
   importRouter.route('/importMatchupRoster')
     .get(controller.ImportMatchupRoster);
 
+  importRouter.route('/importMatchupRosterPlayerStat')
+    .get(controller.ImportMatchupRosterPlayerStat);
+
   return importRouter;
 }
 

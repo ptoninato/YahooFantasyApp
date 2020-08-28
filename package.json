@@ -23,6 +23,7 @@
     "mongoose": "^5.9.25",
     "node-postgres": "^0.6.2",
     "nodemon": "^2.0.4",
+    "opn": "^6.0.0",
     "passport": "^0.4.1",
     "passport-yahoo-oauth2": "git+https://github.com/auth0/passport-yahoo-oauth2.git",
     "pg": "^8.3.0",
@@ -34,5 +35,10 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0"
   },
-  "type": "module"
+  "type": "module",
+  "nodemonConfig": {
+    "ignore": [
+      "zeroPlayers.json"
+    ]
+  }
 }

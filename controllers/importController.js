@@ -11,6 +11,7 @@ import seasonStatModifier from '../services/seasonStatModifierService.js';
 import matchupTeamService from '../services/matchupTeamService.js';
 import matchupCategoryService from '../services/matchupCategoryService.js';
 import matchupRosterService from '../services/matchupRosterService.js';
+import matchupRosterPlayStatService from '../services/matchupRosterPlayerStat.js';
 
 function ImportController() {
   async function importBothGameTypeAndGame(req, res) {
@@ -187,6 +188,17 @@ function ImportController() {
     }
   }
 
+  async function ImportMatchupRosterPlayerStat(req, res) {
+    try {
+      const data = await matchupRosterPlayStatService.ImportMatchupRosterPlayerStats(req, res);
+      res.render('secret.ejs', { data });
+    } catch (e) {
+      console.log(e);
+      const data = e;
+      res.render('secret.ejs', { data });
+    }
+  }
+
 
   return {
     importBothGameTypeAndGame,
@@ -201,7 +213,8 @@ function ImportController() {
     ImportMatchups,
     ImportMatchupTeams,
     ImportMatchupCategories,
-    ImportMatchupRoster
+    ImportMatchupRoster,
+    ImportMatchupRosterPlayerStat
   };
 }
 

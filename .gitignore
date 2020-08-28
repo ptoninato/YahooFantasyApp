@@ -4,3 +4,6 @@ data/keys.js
 !.env.example
 googleAuth.json
 .vscode/launch.json
+zeroPlayers.json
+server.crt
+server.key
