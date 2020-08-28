@@ -44,7 +44,6 @@ const ImportStandings = async (req, res) => {
       const rosteradds = standing.roster_adds ? standing.roster_adds.value : null;
       const clinchedplayoffs = standing.clinched_playoffs ?? false;
       const playoffseed = standing.standings.playoff_seed ?? null;
-      const teamName = standing.name;
 
       console.log(standing);
       let gamesback = null;

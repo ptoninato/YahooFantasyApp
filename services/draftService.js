@@ -100,6 +100,10 @@ const importDrafts = async (req, res) => {
 
     for (let p = 0; p < picks.length; p++) {
       const pick = picks[p];
+      if (pick.player_key === undefined) {
+        console.log(pick);
+        continue;
+      }
 
       const yahooPlayerId = pick.player_key.split('.p.').pop();
 

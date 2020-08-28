@@ -1,3 +1,4 @@
+import pool from '../services/db.js';
 import gameCodeTypeService from '../services/gameCodeTypeService.js';
 import gameCodeService from '../services/gameCodeService.js';
 import leagueService from '../services/leagueService.js';
@@ -26,8 +27,20 @@ function ImportController() {
 
   async function importAll(req, res) {
     try {
+      let query = 'select * from importlock';
+      const results = await pool.query(query);
+      let data;
+      if (results.rows[0].locked === true) {
+        data = 'Error: Import Already Running. Stop Refreshing the Page Nick!!!';
+        return res.redirect(500, 'secret.ejs', { data });
+      }
+
+      console.log('Locking Import....');
+      query = 'update importlock set locked = true';
+      await pool.query(query);
+
       console.log('start type');
-      let data = await gameCodeTypeService.importGameCodeType(req, res);
+      data = await gameCodeTypeService.importGameCodeType(req, res);
       console.log('end type');
 
       console.log('start gamecode');
@@ -62,13 +75,12 @@ function ImportController() {
       data = await seasonStatModifier.ImportSeasonStatModifiers(req, res);
       console.log('end ImportStatModifiers');
 
-
       console.log('start ImportMatchups');
       data = await matchupService.ImportMatchupTeam(req, res);
       console.log('end ImportMatchups');
 
       console.log('start ImportMatchupTeams');
-      data = await matchupService.ImportMatchupTeam(req, res);
+      data = await matchupTeamService.ImportMatchupTeam(req, res);
       console.log('end ImportMatchupTeams');
 
       console.log('start ImportMatchupCategories');
@@ -76,14 +88,27 @@ function ImportController() {
       console.log('end ImportMatchupCategories');
 
       console.log('start ImportDraft');
-      data = await draftService.ImportDrafts(req, res);
+      data = await draftService.importDrafts(req, res);
       console.log('end ImportDraft');
+
+      console.log('update FantasyTeam');
+      data = await standingsService.ImportStandings(req, res);
+      console.log('end FantasyTeam');
+
+      console.log('Unlocking Import...');
+      query = 'update importlock set locked = false';
+      await pool.query(query);
 
       data = 'Import Complete';
 
-      res.render('secret.ejs', { data });
+      return res.render('secret.ejs', { data });
     } catch (e) {
       console.log(e);
+      console.log('Unlocking Import...');
+      let query = 'update importlock set locked = false';
+      await pool.query(query);
+      const data = e;
+      return res.render('secret.ejs', { data });
     }
   }
 
@@ -148,7 +173,6 @@ function ImportController() {
     }
   }
 
-
   async function ImportMatchups(req, res) {
     // const data = await req.app.yf.team.stats('380.l.1020118.t.1', 10);
     try {
@@ -163,7 +187,7 @@ function ImportController() {
 
   async function ImportMatchupTeams(req, res) {
     try {
-      const data = await matchupTeamService.ImportMatchupTeam(req, res);
+      const data = await matchupTeamService.matchupTeamService(req, res);
       res.render('secret.ejs', { data });
     } catch (e) {
       console.log(e);
