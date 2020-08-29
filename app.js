@@ -4,13 +4,14 @@ import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
+import pg from 'pg';
 import ImportRoutesImport from './routes/importRoutes.js';
 
 dotenv.config();
 
 const app = express();
-const yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
-const importRoutes = new ImportRoutesImport(yf);
+app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
+const importRoutes = new ImportRoutesImport();
 
 app.use('/import', importRoutes);
 
@@ -33,7 +34,8 @@ passport.use(new YahooStrategy.Strategy({
   scope: 'profile fspt-r'
 },
 ((token, tokenSecret, profile, done) => {
-  yf.setUserToken(token);
+  app.user = profile;
+  app.yf.setUserToken(token);
   done(null, profile);
 })));
 
@@ -68,10 +70,11 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/import/importGameCodeAndType');
+  res.redirect('/import/importTransactions');
 });
 
 app.get('/database', async (req, res) => {
+  const pool = new pg.Pool();
   const queryResult = await pool.query('SELECT NOW()');
   console.log(queryResult);
   res.redirect('/');

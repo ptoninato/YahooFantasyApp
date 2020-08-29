@@ -2,3 +2,8 @@ node_modules/
 data/keys.js
 .env*
 !.env.example
+googleAuth.json
+.vscode/launch.json
+zeroPlayers.json
+server.crt
+server.key

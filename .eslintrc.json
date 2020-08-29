@@ -12,6 +12,11 @@
     },
     "rules": {
         "comma-dangle": "off",
-        "no-console": 0
+        "no-console": 0,
+        "no-plusplus": 0,
+        "max-len": "off",
+        "import/extensions": "off",
+        "no-continue": "off",
+        "no-await-in-loop": "off"
     }
 }
