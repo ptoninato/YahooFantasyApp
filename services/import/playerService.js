@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import playerModel from '../../models/playerModel.js';
+import playerModel from '../../models/import/playerModel.js';
 
 const GetPlayers = async () => {
   try {

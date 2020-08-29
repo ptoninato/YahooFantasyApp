@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import transactionModel from '../../models/transactionModel.js';
+import transactionModel from '../../models/import/transactionModel.js';
 import yahooApiService from './yahooApiService.js';
 import playerSerivce from './playerService.js';
 import gameCodeTypeService from './gameCodeTypeService.js';

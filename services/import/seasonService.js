@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import seasonModel from '../../models/seasonModel.js';
+import seasonModel from '../../models/import/seasonModel.js';
 import yahooApiService from './yahooApiService.js';
 import leagueService from './leagueService.js';
 import gameCodeService from './gameCodeService.js';

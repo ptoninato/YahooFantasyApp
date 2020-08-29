@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import ownerModel from '../../models/ownerModel.js';
+import ownerModel from '../../models/import/ownerModel.js';
 
 const getYahooGuidsFromDb = async () => {
   try {

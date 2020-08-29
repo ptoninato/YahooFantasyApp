@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import positionTypeModel from '../../models/positionTypeModel.js';
+import positionTypeModel from '../../models/import/positionTypeModel.js';
 
 async function GetPositionTypes() {
   try {
