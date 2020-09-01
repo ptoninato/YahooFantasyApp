@@ -6,6 +6,7 @@ import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
 import pg from 'pg';
 import ImportRoutesImport from './routes/importRoutes.js';
+import moment from 'moment';
 
 dotenv.config();
 
@@ -78,6 +79,16 @@ app.get('/database', async (req, res) => {
   const queryResult = await pool.query('SELECT NOW()');
   console.log(queryResult);
   res.redirect('/');
+});
+
+app.get('/getPlayers', async (req, res) => {
+  const pool = new pg.Pool();
+  const queryResult = await pool.query(`select p.playerid as id, CONCAT(p.firstname, ' ', p.lastname, ', ', upper(g.yahoogamecode)) as Name from player p
+  join gamecodetype g on p.gamecodetypeid = g.gamecodetypeid 
+  order by name asc`);
+  console.log(queryResult.rows);
+  console.log(`Request Received ${moment(Date.now())}`);
+  return res.json(queryResult.rows);
 });
 
 // Secret route
