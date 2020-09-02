@@ -1,32 +1,32 @@
 /* eslint-disable no-use-before-define */
-import React from 'react';
+import React, { useState } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import FormControl from '@material-ui/core/FormControl';
+import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 
 
-class MyForm extends React.Component<{}, { id: any, loading: string, players: any, shouldOpenList: boolean }> {
+let classes: any;
+
+
+class MyForm extends React.Component<{}, { inputValue: any, filterSelectedOptions: boolean, ids: any, loading: string, players: any, shouldOpenList: boolean, classes: any, value: any }> {
   constructor(props:any) {
      super(props);
      this.state = {
-      id : null,
+      ids : null,
       loading : 'initial',
       players : '',
-      shouldOpenList: false
+      shouldOpenList: false,
+      classes : '',
+      value : [],
+      filterSelectedOptions: true,
+      inputValue : ''
     };
     this.onUpdateInput = this.onUpdateInput.bind(this);
-  }
-
-  handleChange = (event: { target: { value: any; }; }) => {
-     this.setState({id: event.target.value});
-  }
-  handleSubmit = async (event: { preventDefault: () => void; }) => {
-    console.log('here');
-    await this.fetchPlayers();
-    // fetch('/getPlayers');
-     event.preventDefault();
+    this.handleChange = this.handleChange.bind(this);
   }
 
 fetchPlayers = async() => {
@@ -40,8 +40,23 @@ fetchPlayers = async() => {
   }
 }
 
+
+
+setStyles = async() => { 
+classes = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    },
+  }),);
+}
+
   async componentWillMount() {
+    await this.setStyles();
       await this.fetchPlayers();
+
   }
 
   onUpdateInput(event: any, values: any, reason: any) {
@@ -51,23 +66,34 @@ fetchPlayers = async() => {
       this.setState({shouldOpenList: false})
     }
   }
+
+  handleChange = async (event: any, newValue: any) => {
+    console.log(newValue);
+    const selectedIDs = newValue.map((value:any) => value.id);
+    console.log(selectedIDs);
+    await this.setState({ids: selectedIDs});
+    console.log(`ids: ${this.state.ids}`);
+  }
+
+  handleSubmit = async (event: { preventDefault: () => void; }) => {
+    console.log(this.state.ids);
+    event.preventDefault();
+ }
   
-
   render() {
-    
-
     if (this.state.loading === 'initial') {
-        return <div>Loading....</div>
+        return <Container maxWidth="sm"><CircularProgress /></Container>
     }
 
      return(    
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
               
-      <Grid  spacing={3}>
-        <form> 
+        <FormControl className={classes.root} fullWidth={true} margin={'normal'}> 
           <Autocomplete
         multiple
-        id="tags-standard"
+        id="id"
+        onChange={this.handleChange}
+        filterSelectedOptions={this.state.filterSelectedOptions}
         onInputChange={this.onUpdateInput}
         open={this.state.shouldOpenList}
         options={this.state.players}
@@ -81,9 +107,9 @@ fetchPlayers = async() => {
           />
         )}
       />     
-          <Button onClick={this.handleSubmit}>Default</Button>
-        </form>
-        </Grid>
+        </FormControl>
+        <Button onClick={this.handleSubmit}>Default</Button>
+
         </Container>
     )
   }
