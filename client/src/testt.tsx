@@ -31,7 +31,7 @@ class MyForm extends React.Component<{}, { inputValue: any, filterSelectedOption
 
 fetchPlayers = async() => {
   try {
-    let response = await fetch('/getPlayers');
+    let response = await fetch('/api/transactionSearch/getAllPlayers');
     const data = await response.json();
     this.setState({loading: 'false', players: data});
   } catch(err) {
