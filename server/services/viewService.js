@@ -36,7 +36,10 @@ const GetYahooLeagueAndTeamCodes = async (req, res) => {
   }
 };
 
-const GetTransactionCountsByPlayerId = async (req, res) => pool.query('select * from transactioncounts');
+const GetTransactionCountsByPlayerId = async (req, res, ids) => {
+  console.log(ids);
+  return pool.query('select * from transactioncounts WHERE playerid = ANY($1::int[])', [ids]);
+};
 
 export default {
   GetAllYahooTeamKeys,

@@ -40,8 +40,6 @@ fetchPlayers = async() => {
   }
 }
 
-
-
 setStyles = async() => { 
 classes = makeStyles((theme: Theme) =>
   createStyles({
@@ -68,16 +66,23 @@ classes = makeStyles((theme: Theme) =>
   }
 
   handleChange = async (event: any, newValue: any) => {
-    console.log(newValue);
     const selectedIDs = newValue.map((value:any) => value.id);
-    console.log(selectedIDs);
     await this.setState({ids: selectedIDs});
-    console.log(`ids: ${this.state.ids}`);
   }
 
   handleSubmit = async (event: { preventDefault: () => void; }) => {
     console.log(this.state.ids);
-    event.preventDefault();
+    const response = await fetch('/api/transactionSearch/getCountById', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+      },
+       body: JSON.stringify(this.state.ids) // body data type must match "Content-Type" header
+    });
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    return data; 
  }
   
   render() {
