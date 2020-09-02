@@ -7,12 +7,11 @@ import Container from '@material-ui/core/Container'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import FormControl from '@material-ui/core/FormControl';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
-
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 let classes: any;
 
-
-class MyForm extends React.Component<{}, { inputValue: any, filterSelectedOptions: boolean, ids: any, loading: string, players: any, shouldOpenList: boolean, classes: any, value: any }> {
+class MyForm extends React.Component<{}, { responseData: any, inputValue: any, filterSelectedOptions: boolean, ids: any, loading: string, players: any, shouldOpenList: boolean, classes: any, value: any }> {
   constructor(props:any) {
      super(props);
      this.state = {
@@ -23,7 +22,8 @@ class MyForm extends React.Component<{}, { inputValue: any, filterSelectedOption
       classes : '',
       value : [],
       filterSelectedOptions: true,
-      inputValue : ''
+      inputValue : '',
+      responseData : []
     };
     this.onUpdateInput = this.onUpdateInput.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -48,6 +48,9 @@ classes = makeStyles((theme: Theme) =>
         margin: theme.spacing(1),
       },
     },
+    table: {
+      minWidth: 650,
+    },
   }),);
 }
 
@@ -67,30 +70,64 @@ classes = makeStyles((theme: Theme) =>
 
   handleChange = async (event: any, newValue: any) => {
     const selectedIDs = newValue.map((value:any) => value.id);
-    await this.setState({ids: selectedIDs});
+    this.setState({ids: selectedIDs});
   }
 
-  handleSubmit = async (event: { preventDefault: () => void; }) => {
-    console.log(this.state.ids);
-    const response = await fetch('/api/transactionSearch/getCountById', {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json'
-      },
-       body: JSON.stringify(this.state.ids) // body data type must match "Content-Type" header
-    });
-    console.log(response);
-    const data = await response.json();
-    console.log(data);
-    return data; 
+
+
+ fetchData = async (url: string) => {
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      'Content-Type': 'application/json'
+    },
+     body: JSON.stringify(this.state.ids) // body data type must match "Content-Type" header
+  });
+  const data = await response.json();
+  this.setState({responseData: data});
+  return data; 
  }
+
+ handleSubmit = async (event: { preventDefault: () => void; }) => {
+  const url = '/api/transactionSearch/getCountById';
+  this.fetchData(url);
+}
   
-  render() {
+render() {
+    const responseData = this.state.responseData;
+    let table;
     if (this.state.loading === 'initial') {
         return <Container maxWidth="sm"><CircularProgress /></Container>
     }
 
-     return(    
+    if(responseData.length > 0 ) {
+      table = <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">League</TableCell>
+            <TableCell align="right">Count</TableCell>
+            <TableCell align="right">Rank</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {responseData.map((row: any) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.leaguename}</TableCell>
+              <TableCell align="right">{row.ct}</TableCell>
+              <TableCell align="right">{row.rank_number}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer> 
+    }
+
+    return(    
             <Container maxWidth="md">
               
         <FormControl className={classes.root} fullWidth={true} margin={'normal'}> 
@@ -113,8 +150,10 @@ classes = makeStyles((theme: Theme) =>
         )}
       />     
         </FormControl>
-        <Button onClick={this.handleSubmit}>Default</Button>
-
+        <Button onClick={this.handleSubmit}>Search</Button>
+        <Button onClick={this.handleSubmit}>The League Top 100</Button>
+        <Button onClick={this.handleSubmit}>Cerveza Mesa Top 100</Button>
+        { table }
         </Container>
     )
   }
