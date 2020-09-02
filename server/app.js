@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from 'passport';
+import bodyParser from 'body-parser';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
@@ -11,6 +12,8 @@ import TransactionSearchRouter from './routes/api/transactionSearchRouter.js';
 dotenv.config();
 
 const app = express();
+app.use(bodyParser.json());
+
 app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 const importRoutes = new ImportRoutesImport();
 const transactionSearchRoutes = new TransactionSearchRouter();
@@ -63,6 +66,11 @@ function isUserAuthenticated(req, res, next) {
 // Routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
+});
+
+app.get('/test', (req, res) => {
+  console.log(req.body);
+  return res.send(req.body);
 });
 
 // passport.authenticate middleware is used here to authenticate the request

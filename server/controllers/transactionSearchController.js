@@ -12,8 +12,14 @@ function TransactionSearchController() {
     return res.json(queryResult.rows);
   };
 
+  const GetCountsByPlayerId = async (req, res) => {
+    console.log(req);
+    return res.json(req.body);
+  };
+
   return {
-    GetAllPlayers
+    GetAllPlayers,
+    GetCountsByPlayerId
   };
 }
 

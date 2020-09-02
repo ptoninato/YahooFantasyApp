@@ -3,10 +3,12 @@ import TransactionSearchController from '../../controllers/transactionSearchCont
 
 const transactionSearchRouter = express.Router();
 
-function transactionSearchRoutes(req, res) {
+function transactionSearchRoutes() {
   const controller = new TransactionSearchController();
 
   transactionSearchRouter.route('/getAllPlayers').get(controller.GetAllPlayers);
+
+  transactionSearchRouter.route('/getCountById').get(controller.GetCountsByPlayerId);
 
   return transactionSearchRouter;
 }

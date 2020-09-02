@@ -36,5 +36,12 @@ const GetYahooLeagueAndTeamCodes = async (req, res) => {
   }
 };
 
+const GetTransactionCountsByPlayerId = async (req, res) => pool.query('select * from transactioncounts');
 
-export default { GetAllYahooTeamKeys, GetSeasonidLeagueidYahoogamecode, GetYahooLeagueCodes, GetYahooLeagueAndTeamCodes };
+export default {
+  GetAllYahooTeamKeys,
+  GetSeasonidLeagueidYahoogamecode,
+  GetYahooLeagueCodes,
+  GetYahooLeagueAndTeamCodes,
+  GetTransactionCountsByPlayerId
+};
