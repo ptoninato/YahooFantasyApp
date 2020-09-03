@@ -75,14 +75,21 @@ classes = makeStyles((theme: Theme) =>
 
 
 
- fetchData = async (url: string) => {
-  const response = await fetch(url, {
+ fetchData = async (url: string, getAll: boolean = false) => {
+   let response;
+  console.log(this.state.ids);
+   if ((this.state.ids || this.state.ids !== null) && this.state.ids.length > 0 && !getAll) {
+    response = await fetch(url, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     headers: {
       'Content-Type': 'application/json'
     },
      body: JSON.stringify(this.state.ids) // body data type must match "Content-Type" header
   });
+} else {
+  console.log('here');
+  response = await fetch(url);
+}
   const data = await response.json();
   this.setState({responseData: data});
   return data; 
@@ -92,6 +99,13 @@ classes = makeStyles((theme: Theme) =>
   const url = '/api/transactionSearch/getCountById';
   this.fetchData(url);
 }
+
+handleSubmitTopMlb = async (event: { preventDefault: () => void; }) => {
+  const url = '/api/transactionSearch/getTopMlb';
+  this.fetchData(url, true);
+}
+
+
   
 render() {
     const responseData = this.state.responseData;
@@ -106,6 +120,7 @@ render() {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
+            <TableCell>Position</TableCell>
             <TableCell align="right">League</TableCell>
             <TableCell align="right">Count</TableCell>
             <TableCell align="right">Rank</TableCell>
@@ -117,6 +132,7 @@ render() {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
+              <TableCell>{row.yahoopositiontype}</TableCell>
               <TableCell align="right">{row.leaguename}</TableCell>
               <TableCell align="right">{row.ct}</TableCell>
               <TableCell align="right">{row.rank_number}</TableCell>
@@ -144,15 +160,14 @@ render() {
           <TextField
             {...params}
             variant="standard"
-            label="Multiple values"
-            placeholder="Favorites"
+            label="Players"
+            placeholder="Search"
           />
         )}
       />     
         </FormControl>
         <Button onClick={this.handleSubmit}>Search</Button>
-        <Button onClick={this.handleSubmit}>The League Top 100</Button>
-        <Button onClick={this.handleSubmit}>Cerveza Mesa Top 100</Button>
+        <Button onClick={this.handleSubmitTopMlb}>The League Top 100</Button>
         { table }
         </Container>
     )

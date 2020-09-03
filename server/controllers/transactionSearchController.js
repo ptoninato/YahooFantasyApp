@@ -15,13 +15,18 @@ function TransactionSearchController() {
   const GetCountsByPlayerId = async (req, res) => {
     const ids = req.body;
     const data = await viewService.GetTransactionCountsByPlayerId(req, res, ids);
-    console.log(data.rows);
+    return res.json(data.rows);
+  };
+
+  const GetTopPlayersMLB = async (req, res) => {
+    const data = await viewService.GetTopTransactionsForMlb(req, res, [100]);
     return res.json(data.rows);
   };
 
   return {
     GetAllPlayers,
-    GetCountsByPlayerId
+    GetCountsByPlayerId,
+    GetTopPlayersMLB
   };
 }
 

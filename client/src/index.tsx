@@ -1,14 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Test from './testt';
-import App from './App';
+import TransactionSearch from './transactionSearch';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> */}
-    <Test />
+    <TransactionSearch />
   </React.StrictMode>,
   document.getElementById('root')
 );
