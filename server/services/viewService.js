@@ -1,6 +1,6 @@
 import pool from './db.js';
 
-const GetAllYahooTeamKeys = async (req, res) => {
+const GetAllYahooTeamKeys = async () => {
   try {
     return await pool.query('select * from yahooteamkeys');
   } catch (e) {
@@ -9,7 +9,7 @@ const GetAllYahooTeamKeys = async (req, res) => {
   }
 };
 
-const GetSeasonidLeagueidYahoogamecode = async (req, res) => {
+const GetSeasonidLeagueidYahoogamecode = async () => {
   try {
     return await pool.query('select * from seasonidleagueidyahoogamecode');
   } catch (e) {
@@ -18,7 +18,7 @@ const GetSeasonidLeagueidYahoogamecode = async (req, res) => {
   }
 };
 
-const GetYahooLeagueCodes = async (req, res) => {
+const GetYahooLeagueCodes = async () => {
   try {
     return await pool.query('select * from yahooleaguecode');
   } catch (e) {
@@ -27,7 +27,7 @@ const GetYahooLeagueCodes = async (req, res) => {
   }
 };
 
-const GetYahooLeagueAndTeamCodes = async (req, res) => {
+const GetYahooLeagueAndTeamCodes = async () => {
   try {
     return await pool.query('select * from yahooleagueandteamcodes');
   } catch (e) {
@@ -36,5 +36,21 @@ const GetYahooLeagueAndTeamCodes = async (req, res) => {
   }
 };
 
+const GetTransactionCountsByPlayerId = async (req, res, ids) => {
+  console.log(ids);
+  return pool.query('select * from transactioncountsmlb WHERE playerid = ANY($1::int[])', [ids]);
+};
 
-export default { GetAllYahooTeamKeys, GetSeasonidLeagueidYahoogamecode, GetYahooLeagueCodes, GetYahooLeagueAndTeamCodes };
+const GetTopTransactionsForMlb = async (req, res, count) => {
+  console.log(count);
+  return pool.query('select * from transactioncountsmlb limit $1', count);
+};
+
+export default {
+  GetAllYahooTeamKeys,
+  GetSeasonidLeagueidYahoogamecode,
+  GetYahooLeagueCodes,
+  GetYahooLeagueAndTeamCodes,
+  GetTransactionCountsByPlayerId,
+  GetTopTransactionsForMlb
+};

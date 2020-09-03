@@ -1,19 +1,24 @@
 import express from 'express';
 import passport from 'passport';
+import bodyParser from 'body-parser';
 import YahooStrategy from 'passport-yahoo-oauth2';
 import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
 import pg from 'pg';
 import ImportRoutesImport from './routes/importRoutes.js';
+import TransactionSearchRouter from './routes/api/transactionSearchRouter.js';
 
 dotenv.config();
 
 const app = express();
+app.use(bodyParser.json());
+
 app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 const importRoutes = new ImportRoutesImport();
-
+const transactionSearchRoutes = new TransactionSearchRouter();
 app.use('/import', importRoutes);
+app.use('/api/transactionSearch', transactionSearchRoutes);
 
 // cookieSession config
 app.use(cookieSession({
@@ -63,6 +68,11 @@ app.get('/', (req, res) => {
   res.render('index.ejs');
 });
 
+app.get('/test', (req, res) => {
+  console.log(req.body);
+  return res.send(req.body);
+});
+
 // passport.authenticate middleware is used here to authenticate the request
 app.get('/auth/yahoo', passport.authenticate('yahoo', {
   scope: 'profile fspt-r'// Used to specify the required data
@@ -71,6 +81,7 @@ app.get('/auth/yahoo', passport.authenticate('yahoo', {
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
   res.redirect('/import/importTransactions');
+  // res.redirect('/import/importAll');
 });
 
 app.get('/database', async (req, res) => {
