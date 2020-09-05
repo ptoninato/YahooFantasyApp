@@ -76,8 +76,13 @@ const ImportYahooRoster = async (req, res, rosterFromYahoo, yahooTeamCodeFromDb,
   }
 };
 
-const ImportMatchupRoster = async (req, res) => {
-  const yahooTeamCodes = await viewService.GetYahooLeagueAndTeamCodes();
+const ImportMatchupRoster = async (req, res, currentSeasonsOnly) => {
+  let yahooTeamCodes;
+  if (currentSeasonsOnly) {
+    yahooTeamCodes = await viewService.GetYahooLeagueAndTeamCodesCurrentSeasons();
+  } else {
+    yahooTeamCodes = await viewService.GetYahooLeagueAndTeamCodes();
+  }
   positionTypes = await positionTypeService.GetPositionTypes();
   seasonPositions = await seasonPositionService.GetSeasonPositionsWithYahooCode();
   existingMatchupRosters = await GetMatchupRosters();
