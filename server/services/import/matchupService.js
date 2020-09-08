@@ -10,8 +10,16 @@ const GetMatchups = async () => {
   return results;
 };
 
-const ImportMatchupTeam = async (req, res) => {
-  const seasons = await seasonService.getExistingSeasons();
+const ImportMatchupTeam = async (req, res, currentSeasonOnly) => {
+  let seasons;
+
+  if (currentSeasonOnly) {
+    seasons = await seasonService.getCurrentSeasons();
+  } else {
+    seasons = await seasonService.getExistingSeasons();
+  }
+  console.log('here');
+
   const gameCodes = await gameCodeService.getAllGameCodes();
   let seasonWeeks = await seasonWeekService.GetSeasonWeeks();
   const teams = await viewService.GetAllYahooTeamKeys();

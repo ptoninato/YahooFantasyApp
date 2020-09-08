@@ -17,14 +17,20 @@ const InsertMatchupGradeType = async (grade) => {
   const results = await pool.query(query, grade);
 };
 
-const ImportMatchupTeam = async (req, res) => {
+const ImportMatchupTeam = async (req, res, currentSeasonsOnly) => {
   const teams = await viewService.GetAllYahooTeamKeys();
   const matchups = await matchupService.GetMatchups();
   let matchupGradeTypes = await matchupGradeTypeService.GetMatchupGradeTypes();
   const matchupTeams = await GetMatchupTeams();
-  const seasons = await seasonService.getExistingSeasons();
-  const gameCodes = await gameCodeService.getAllGameCodes();
-  const seasonWeeks = await seasonWeekService.GetSeasonWeeks();
+  const gameCodes = await gameCodeService.getAllGameCodes();  const seasonWeeks = await seasonWeekService.GetSeasonWeeks();
+
+  let seasons;
+
+  if (currentSeasonsOnly) {
+    seasons = await seasonService.getCurrentSeasons();
+  } else {
+    seasons = await seasonService.getExistingSeasons();
+  }
 
   for (let s = 0; s < seasons.length; s++) {
     const season = seasons[s];

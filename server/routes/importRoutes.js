@@ -24,6 +24,12 @@ function importRoutes(req, res) {
   importRouter.route('/importTransactions')
     .get(controller.importTransactions);
 
+  importRouter.route('/importTransactionsCurrentSeason')
+    .get(controller.importTransactionsCurrentSeason);
+
+  importRouter.route('/matchupCurrentSeasons')
+    .get(controller.importCurrentSeasonMatchups);
+
   importRouter.route('/importSeasonPositions')
     .get(controller.ImportSeasonPositions);
 

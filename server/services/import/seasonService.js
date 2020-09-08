@@ -14,6 +14,11 @@ async function getExistingSeasons() {
   }
 }
 
+async function getCurrentSeasons() {
+  const results = await pool.query('select * from season s WHERE seasonyear >= ALL(select seasonyear from season)');
+  return results.rows;
+}
+
 async function getSeasonIdYahooLeagueIdAndGameCodeId() {
   try {
     const query = `select s.seasonid, s.yahooleagueid, gc.yahoogamecode from season as s
@@ -89,5 +94,6 @@ const importSeasons = async (req, res) => {
 export default {
   importSeasons,
   getSeasonIdYahooLeagueIdAndGameCodeId,
-  getExistingSeasons
+  getExistingSeasons,
+  getCurrentSeasons
 };
