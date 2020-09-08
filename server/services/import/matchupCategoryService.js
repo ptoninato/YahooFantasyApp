@@ -138,16 +138,22 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
   }
 };
 
-const ImportMatchupCategories = async (req, res) => {
+const ImportMatchupCategories = async (req, res, currentSeasonsOnly) => {
   teams = await viewService.GetAllYahooTeamKeys();
   matchups = await matchupService.GetMatchups();
   matchupTeams = await matchupTeamService.GetMatchupTeams();
-  seasons = await seasonService.getExistingSeasons();
   gameCodes = await gameCodeService.getAllGameCodes();
   seasonWeeks = await seasonWeekService.GetSeasonWeeks();
   matchupCategoryTeams = await GetMatchupCategoryTeams();
   matchupCategoryResults = await GetMatchupCategoryResults();
   statCategories = await statCategoryService.GetStatCategorySeasonIdYahooCategoryId();
+
+  if (currentSeasonsOnly) {
+    seasons = await seasonService.getCurrentSeasons();
+  } else {
+    seasons = await seasonService.getExistingSeasons();
+  }
+
   for (let s = 0; s < seasons.length; s++) {
     const season = seasons[s];
     const lastWeek = season.lastweek;

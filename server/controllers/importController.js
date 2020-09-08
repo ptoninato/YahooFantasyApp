@@ -138,6 +138,16 @@ function ImportController() {
     }
   }
 
+  async function importTransactionsCurrentSeason(req, res) {
+    const data = 'Transaction Season Import Started';
+    res.render('secret.ejs', { data });
+    try {
+      transactionService.ImportTransactions(req, res, true);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async function ImportSeasonPositions(req, res) {
     // const data = await req.app.yf.team.stats('380.l.1020118.t.1', 10);
     try {
@@ -171,6 +181,28 @@ function ImportController() {
       const data = e;
       res.render('secret.ejs', { data });
     }
+  }
+
+  async function importCurrentSeasonMatchups(req, res) {
+    console.log('start ImportMatchups');
+    let data = await matchupService.ImportMatchupTeam(req, res, true);
+    console.log('end ImportMatchups');
+
+    console.log('start ImportMatchupTeams');
+    data = await matchupTeamService.ImportMatchupTeam(req, res, true);
+    console.log('end ImportMatchupTeams');
+
+    console.log('start ImportMatchupCategories');
+    data = await matchupCategoryService.ImportMatchupCategories(req, res, true);
+    console.log('end ImportMatchupCategories');
+
+    console.log('start ImportMatchupRoster');
+    data = await matchupRosterService.ImportMatchupRoster(req, res, true);
+    console.log('start ImportMatchupRoster');
+
+    console.log('start MatchupRosterPlayerStats');
+    data = await matchupRosterPlayStatService.ImportMatchupRosterPlayerStats(req, res, true);
+    console.log('end MatchupRosterPlayerStats');
   }
 
   async function ImportMatchups(req, res) {
@@ -258,6 +290,7 @@ function ImportController() {
     importSeasons,
     importTeams,
     importTransactions,
+    importTransactionsCurrentSeason,
     ImportSeasonPositions,
     ImportStatCategories,
     ImportStatModifiers,
@@ -267,7 +300,8 @@ function ImportController() {
     ImportMatchupRoster,
     ImportMatchupRosterPlayerStat,
     ImportDrafts,
-    ImportStandings
+    ImportStandings,
+    importCurrentSeasonMatchups
   };
 }
 

@@ -6,6 +6,7 @@ import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
 import pg from 'pg';
+import cookieParser from 'cookie-parser';
 import ImportRoutesImport from './routes/importRoutes.js';
 import TransactionSearchRouter from './routes/api/transactionSearchRouter.js';
 
@@ -13,6 +14,8 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 const importRoutes = new ImportRoutesImport();
@@ -55,12 +58,33 @@ passport.deserializeUser((user, done) => {
 });
 
 // Middleware to check if the user is authenticated
+// function isUserAuthenticated(req, res, next) {
+//   if (req.user) {
+//     console.log(req.user);
+//     next();
+//   } else {
+//     res.send('You must login!');
+//   }
+// }
+
 function isUserAuthenticated(req, res, next) {
-  if (req.user) {
-    next();
+  let userObj;
+  console.log('here');
+  console.log(req);
+
+  if (req.isAuthenticated()) {
+    userObj = {
+      name: req.user.name,
+      avatar: req.user.avatar
+    };
+    console.log('user is authenticated');
   } else {
     res.send('You must login!');
-  }
+}
+
+  req.userObj = userObj;
+
+  next();
 }
 
 // Routes
@@ -75,13 +99,15 @@ app.get('/test', (req, res) => {
 
 // passport.authenticate middleware is used here to authenticate the request
 app.get('/auth/yahoo', passport.authenticate('yahoo', {
-  scope: 'profile fspt-r'// Used to specify the required data
+  scope: 'profile fspt-r', // Used to specify the required data,
 }));
 
 // // The middleware receives the data from Yahoo and runs the function on Strategy config
 app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
-  res.redirect('/import/importTransactions');
+  // console.log(req);
+  // res.redirect('/import/importTransactions');
   // res.redirect('/import/importAll');
+  res.redirect('/');
 });
 
 app.get('/database', async (req, res) => {
@@ -92,7 +118,10 @@ app.get('/database', async (req, res) => {
 });
 
 // Secret route
-app.get('/secret', isUserAuthenticated, async (req, res) => ('secret.ejs'));
+app.get('/secret', isUserAuthenticated, (req, res) => {
+  const data = 'You are logged in';
+  res.render('secret.ejs', { data });
+});
 
 // Logout route
 app.get('/logout', (req, res) => {
