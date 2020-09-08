@@ -6,6 +6,8 @@ import cookieSession from 'cookie-session';
 import YahooFantasy from 'yahoo-fantasy';
 import dotenv from 'dotenv';
 import pg from 'pg';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import ImportRoutesImport from './routes/importRoutes.js';
 import TransactionSearchRouter from './routes/api/transactionSearchRouter.js';
 
@@ -13,7 +15,9 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cors());
 app.yf = new YahooFantasy(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
 const importRoutes = new ImportRoutesImport();
 const transactionSearchRoutes = new TransactionSearchRouter();
