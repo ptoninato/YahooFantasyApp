@@ -59,7 +59,8 @@ const ImportTransactions = async (req, res, currentSeasonsOnly) => {
     let transactions;
     try {
       transactions = await yahooApiService.getLeagueTransactions(req, res, leagueCodes.rows[l].leaguecode);
-    } catch {
+    } catch (e) {
+      console.log(e);
       continue;
     }
     const leagueCodeType = transactions.data.game_code;
