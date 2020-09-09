@@ -11,7 +11,7 @@ services:
       - 6432:5432
 
   api:
-    command: "npm start"
+    command: bash -c "npm i && npm start"
     image: pmtoninato/server:1
     env_file:
       - database.env # configure postgres
@@ -26,7 +26,7 @@ services:
     tty: true
   
   client:
-    command: "npm start"
+    command:  bash -c "npm i && npm start"
     image: pmtoninato/client:1
     volumes:
       - ./client:/app
