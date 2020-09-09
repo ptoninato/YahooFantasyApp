@@ -11,36 +11,31 @@ services:
       - 6432:5432
 
   api:
-    image: node
-    restart: always
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
+    command: "npm start"
+    image: pmtoninato/server:1
     env_file:
       - database.env # configure postgres
     ports:
       - 8000:8000
     volumes:
-      - .:/api
-      - ./error.log:/usr/src/app/error.log
+      - ./server:/app
     depends_on:  
-      - "database"
+      - database
+    links:
+      - database
+    tty: true
   
-  app:
-    container_name: app
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
+  client:
+    command: "npm start"
+    image: pmtoninato/client:1
     volumes:
-      - '.:/app'
+      - ./client:/app
     ports:
       - 3000:3000
     depends_on:  
       - api
-    stdin_open: true
+    tty: true
     
 
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
-  api:
-  app:
