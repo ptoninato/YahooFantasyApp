@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import TransactionSearch from './transactionSearch';
 import * as serviceWorker from './serviceWorker';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 ReactDOM.render(
   <React.StrictMode>

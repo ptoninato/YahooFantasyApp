@@ -31,7 +31,7 @@ class MyForm extends React.Component<{}, { responseData: any, inputValue: any, f
 
 fetchPlayers = async() => {
   try {
-    let response = await fetch('/api/transactionSearch/getAllPlayers');
+    let response = await fetch(`http://patricktoninato.ddns.net:8000/api/transactionSearch/getAllPlayers`);
     const data = await response.json();
     this.setState({loading: 'false', players: data});
   } catch(err) {

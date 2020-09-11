@@ -35,7 +35,29 @@ services:
     depends_on:  
       - api
     tty: true
-    
+
+  swag:
+    image: linuxserver/swag
+    # command: bash -c "cp /config/default /config/nginx/site-confs"
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Chicago
+      - URL=patricktoninato.dev
+      - SUBDOMAINS=*
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare #optional
+      - EMAIL= pmtoninato@gmail.com #optional
+      - ONLY_SUBDOMAINS=false #optional
+      - STAGING=false #optional
+    volumes:
+      - ./config:/config
+    ports:
+      - 443:443
+      - 80:80 #optional    
 
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
