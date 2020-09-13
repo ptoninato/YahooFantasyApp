@@ -91,6 +91,10 @@ function isUserAuthenticated(req, res, next) {
 
 // Routes
 app.get('/', (req, res) => {
+  res.render('home.ejs');
+});
+
+app.get('/index', (req, res) => {
   res.render('index.ejs');
 });
 
@@ -109,7 +113,7 @@ app.get('/auth/yahoo/callback', passport.authenticate('yahoo'), (req, res) => {
   // console.log(req);
   // res.redirect('/import/importTransactions');
   // res.redirect('/import/importAll');
-  res.redirect('/');
+  res.redirect('/index');
 });
 
 app.get('/database', async (req, res) => {
