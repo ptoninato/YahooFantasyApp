@@ -39,8 +39,15 @@ async function InsertTransactions(transactions) {
   }
 }
 
-const ImportTransactions = async (req, res) => {
-  const leagueCodes = await GetLeagueCodes();
+const ImportTransactions = async (req, res, currentSeasonsOnly) => {
+  let leagueCodes;
+
+  if (currentSeasonsOnly) {
+    leagueCodes = await viewService.GetCurrentSeasonLeagueCodes();
+  } else {
+    leagueCodes = await GetLeagueCodes();
+  }
+
   const gameCodeTypes = await gameCodeTypeService.getAllCodeTypes();
   const seasons = await viewService.GetSeasonidLeagueidYahoogamecode();
   const teams = await viewService.GetAllYahooTeamKeys();
@@ -52,7 +59,8 @@ const ImportTransactions = async (req, res) => {
     let transactions;
     try {
       transactions = await yahooApiService.getLeagueTransactions(req, res, leagueCodes.rows[l].leaguecode);
-    } catch {
+    } catch (e) {
+      console.log(e);
       continue;
     }
     const leagueCodeType = transactions.data.game_code;

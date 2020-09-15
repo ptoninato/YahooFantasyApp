@@ -1,0 +1,54 @@
+# docker-compose.yml
+version: '3'
+services:
+  database:
+    image: "postgres" # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+    ports:
+      - 6432:5432
+
+  api:
+    command: bash -c "npm i && npm start"
+    image: pmtoninato/server:1
+    env_file:
+      - database.env # configure postgres
+    ports:
+      - 8000:8000
+    volumes:
+      - ./server:/app
+    depends_on:  
+      - database
+    links:
+      - database
+    tty: true
+  
+  client:
+    # command:  bash -c "npm i"
+    command:  bash -c "npm i && npm run build && npm run prod"
+    image: pmtoninato/client:1
+    volumes:
+      - ./client:/app
+    ports:
+      - 3000:3000
+    depends_on:  
+      - api
+    tty: true
+
+  swag:
+    image: linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - swag.env # configure swag
+    volumes:
+      - ./config:/config
+    ports:
+      - 443:443
+      - 80:80 #optional    
+
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose

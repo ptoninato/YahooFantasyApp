@@ -31,7 +31,8 @@ class MyForm extends React.Component<{}, { responseData: any, inputValue: any, f
 
 fetchPlayers = async() => {
   try {
-    let response = await fetch('/api/transactionSearch/getAllPlayers');
+    var url = `${process.env.REACT_APP_API_DOMAIN}/api/transactionSearch/getAllPlayers`;
+    let response = await fetch(url);
     const data = await response.json();
     this.setState({loading: 'false', players: data});
   } catch(err) {
@@ -77,7 +78,6 @@ classes = makeStyles((theme: Theme) =>
 
  fetchData = async (url: string, getAll: boolean = false) => {
    let response;
-  console.log(this.state.ids);
    if ((this.state.ids || this.state.ids !== null) && this.state.ids.length > 0 && !getAll) {
     response = await fetch(url, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -87,7 +87,6 @@ classes = makeStyles((theme: Theme) =>
      body: JSON.stringify(this.state.ids) // body data type must match "Content-Type" header
   });
 } else {
-  console.log('here');
   response = await fetch(url);
 }
   const data = await response.json();
@@ -96,12 +95,12 @@ classes = makeStyles((theme: Theme) =>
  }
 
  handleSubmit = async (event: { preventDefault: () => void; }) => {
-  const url = '/api/transactionSearch/getCountById';
+  const url = `${process.env.REACT_APP_API_DOMAIN}/api/transactionSearch/getCountById`;
   this.fetchData(url);
 }
 
 handleSubmitTopMlb = async (event: { preventDefault: () => void; }) => {
-  const url = '/api/transactionSearch/getTopMlb';
+  const url = `${process.env.REACT_APP_API_DOMAIN}/api/transactionSearch/getTopMlb`;
   this.fetchData(url, true);
 }
 
