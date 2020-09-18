@@ -42,9 +42,9 @@ const ImportMatchupTeam = async (req, res, currentSeasonOnly) => {
       } catch {
         continue;
       }
-      console.log(`${w}/${lastWeek}`);
+      console.log(`${w}/${lastWeek}/Matchup Length: ${data.scoreboard.matchups.length}`);
 
-      if (new Date(data.scoreboard.matchups[0].week_end) >= Date.now()) {
+      if ((data.scoreboard.matchups.length === 0) || new Date(data.scoreboard.matchups[0].week_end) >= Date.now()) {
         continue;
       }
 

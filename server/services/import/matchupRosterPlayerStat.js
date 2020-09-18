@@ -34,9 +34,28 @@ const MatchupRosterToImport = async () => {
   return results;
 };
 
-const ImportMatchupRosterPlayerStats = async (req, res) => {
+const MatchupRosterToImportCurrentSeason = async () => {
+  const results = await pool.query(`select m.matchuprosterid, s.seasonyear, s2.weeknumber, f2.teamname, CONCAT(p2.firstname, ' ', p2.lastname) as Name, p2.yahooplayerid, g.yahoogamecode, s2.weeknumber, s.seasonid from matchuproster m 
+  join player p2 on m.playerid = p2.playerid 
+  join matchupteam m2 on m.matchupteamid = m2.matchupteamid 
+  join fantasyteam f2 on m2.fantasyteamid = f2.fantasyteamid 
+  join matchup m3 on m2.matchupid = m3.matchupid 
+  join seasonweek s2 on m3.seasonweekid = s2.seasonweekid 
+  join season s on m3.seasonid = s.seasonid 
+  join gamecode g on s.gamecodeid = g.gamecodeid 
+  join gamecodetype g2 on g.gamecodetypeid = g2.gamecodetypeid 
+  where g2.yahoogamecode = 'nfl' and m.matchuprosterid not in (select distinct m4.matchuprosterid from matchuprosterplayerstat m4) and s.seasonyear >= ALL(select seasonyear from season)`);
+  return results;
+};
+
+const ImportMatchupRosterPlayerStats = async (req, res, currentSeason) => {
   existingMatchupPlayerStats = await GetMatchupRosterPlayerStat();
-  const RecordsToImport = await MatchupRosterToImport();
+  let RecordsToImport;
+  if (currentSeason) {
+    RecordsToImport = await MatchupRosterToImportCurrentSeason();
+  } else {
+    RecordsToImport = await MatchupRosterToImport();
+  }
   const existingSeasonStats = await GetStatCategorySeasonIdYahooCategoryId();
 
   // const zeroList = await readFile();

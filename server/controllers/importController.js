@@ -252,7 +252,7 @@ function ImportController() {
 
   async function ImportMatchupRosterPlayerStat(req, res) {
     try {
-      const data = await matchupRosterPlayStatService.ImportMatchupRosterPlayerStats(req, res);
+      const data = await matchupRosterPlayStatService.ImportMatchupRosterPlayerStats(req, res, true);
       res.render('secret.ejs', { data });
     } catch (e) {
       console.log(e);

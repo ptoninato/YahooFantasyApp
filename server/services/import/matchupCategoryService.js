@@ -42,9 +42,9 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
       return;
     }
 
-    console.log(`${fullLeagueCode}: ${w}/${lastWeek}, ${new Date(data.scoreboard.matchups[0].week_end)}`);
+    console.log(`${fullLeagueCode}: ${w}/${lastWeek}`);
 
-    if ((moment(data.scoreboard.matchups[0].week_end).startOf('day') >= moment(new Date()).startOf('day'))) {
+    if ((data.scoreboard.matchups.length === 0) || (moment(data.scoreboard.matchups[0].week_end).startOf('day') >= moment(new Date()).startOf('day'))) {
       console.log('skip');
       continue;
     }
@@ -62,7 +62,6 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
       const matchupsForTeams = matchupsInWeek.filter((value) => (value.fantasyteamid1 === dbTeam1.fantasyteamid || value.fantasyteamid2 === dbTeam1.fantasyteamid));
 
       const matchupTeamsForWeek = matchupTeams.rows.filter((value) => (value.matchupid === matchupsForTeams[0].matchupid));
-
       if (yahooMatchup.stat_winners) {
         for (let x = 0; x < yahooMatchup.stat_winners.length; x++) {
           const statWinner = yahooMatchup.stat_winners[x];
@@ -109,8 +108,8 @@ const ImportCategoryWeeks = async (req, res, lastWeek, gameCode, season) => {
           }
         }
       }
-      for (let t = 0; t < yahooMatchup.teams.length; t++) { 
-        const yahooTeam = yahooMatchup.teams[t];
+      for (let t = 0; t < yahooMatchup.length; t++) { 
+        const yahooTeam = yahooMatchup[t];
         const dbTeam = teams.rows.filter((value) => value.team_key === yahooTeam.team_key)[0];
         const matchupTeam = matchupTeamsForWeek.filter((value) => value.fantasyteamid === dbTeam.fantasyteamid)[0];
 
