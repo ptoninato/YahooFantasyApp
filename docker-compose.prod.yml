@@ -26,7 +26,6 @@ services:
     tty: true
   
   client:
-    # command:  bash -c "npm i"
     command:  bash -c "npm i && npm run build && npm run prod"
     image: pmtoninato/client:1
     volumes:
@@ -36,6 +35,14 @@ services:
     depends_on:  
       - api
     tty: true
+  
+    jekyll:
+      image: jekyll/jekyll:latest
+      command: bash -c "jekyll build && npm i -g serve && serve -l 4000 -s _site"
+      ports:
+        - 4000:4000
+      volumes:
+        - ./jekyll/patricktoninato.dev:/srv/jekyll  
 
   swag:
     image: linuxserver/swag
