@@ -76,6 +76,10 @@ const ImportYahooRoster = async (req, res, rosterFromYahoo, yahooTeamCodeFromDb,
   }
 };
 
+const dateDifference = async (date, currentDate) => {
+  return (currentDate.diff(date, 'days') > 10);
+}
+
 const ImportMatchupRoster = async (req, res, currentSeasonsOnly) => {
   let yahooTeamCodes;
   if (currentSeasonsOnly) {
@@ -102,10 +106,17 @@ const ImportMatchupRoster = async (req, res, currentSeasonsOnly) => {
     if (yahooTeamCode.yahoogamecode === 'mlb') {
       filterValue = yahooTeamCode.startdate;
       lastValue = yahooTeamCode.enddate;
-      console.log('here again');
-
+      var currentDate = moment().startOf('day');
       for (let d = moment(filterValue); d.isSameOrBefore(lastValue); d.add(1, 'days')) {
+
+        if (await dateDifference(d, currentDate)) {          
+          console.log(`Skipping Roster for ${d.format('YYYY-MM-DD')} value ${d}/${moment(lastValue).format('YYYY-MM-DD')}`);
+          console.log(currentDate.diff(d, 'days'));
+          continue;
+        }
+
         console.log(`Importing Roster for ${d.format('YYYY-MM-DD')} value ${d}/${moment(lastValue).format('YYYY-MM-DD')}`);
+
         let yahooroster;
         try {
           yahooroster = await yahooApiService.GetRoster(req, res, yahooTeamCode.yahooteamcode, d.format('YYYY-MM-DD'));
