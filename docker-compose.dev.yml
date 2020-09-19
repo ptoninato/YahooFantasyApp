@@ -35,6 +35,14 @@ services:
     depends_on:  
       - api
     tty: true
+  
+  jekyll:
+    image: jekyll/jekyll:latest
+    command: jekyll serve --watch --force_polling --verbose
+    ports:
+      - 4000:4000
+    volumes:
+      - ./jekyll/patricktoninato.dev:/srv/jekyll
 
 volumes:
   database-data: # named volumes can be managed easier using docker-compose
