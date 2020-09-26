@@ -40,7 +40,7 @@ const GetYahooLeagueAndTeamCodesCurrentSeasons = async () => pool.query('select 
 
 const GetTransactionCountsByPlayerId = async (req, res, ids) => {
   console.log(ids);
-  return pool.query('select * from transactioncountsmlb WHERE playerid = ANY($1::int[])', [ids]);
+  return pool.query('select * from transactioncounts WHERE playerid = ANY($1::int[])', [ids]);
 };
 
 const GetTopTransactionsForMlb = async (req, res, count) => {
