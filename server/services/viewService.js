@@ -38,9 +38,11 @@ const GetYahooLeagueAndTeamCodes = async () => {
 
 const GetYahooLeagueAndTeamCodesCurrentSeasons = async () => pool.query('select * from yahooleagueandteamcodes where seasonyear >= ALL(select seasonyear from season) order by seasonyear');
 
-const GetTransactionCountsByPlayerId = async (req, res, ids) => {
-  console.log(ids);
-  return pool.query('select * from transactioncounts WHERE playerid = ANY($1::int[])', [ids]);
+const GetTransactionCountsByPlayerId = async (req, res, playerIds, leagueId) => {
+  console.log(playerIds);
+  console.log(leagueId);
+  const results = pool.query('select * from transactioncounts WHERE playerid = ANY($1::int[]) and leagueid = $2', [playerIds, leagueId]);
+  return results;
 };
 
 const GetTopTransactionsForMlb = async (req, res, count) => {
