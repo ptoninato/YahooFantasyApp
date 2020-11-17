@@ -8,7 +8,7 @@ function transactionSearchRoutes() {
 
   transactionSearchRouter.route('/getAllPlayers').get(controller.GetAllPlayers);
 
-  transactionSearchRouter.route('/getCountById').post(controller.GetCountsByPlayerId);
+  transactionSearchRouter.route('/getCountById').get(controller.GetCountsByPlayerId);
 
   transactionSearchRouter.route('/getTopMlb').get(controller.GetTopPlayersMLB);
 

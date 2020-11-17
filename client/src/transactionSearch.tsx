@@ -11,13 +11,14 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 
 let classes: any;
 
-class MyForm extends React.Component<{}, { responseData: any, inputValue: any, filterSelectedOptions: boolean, ids: any, loading: string, players: any, shouldOpenList: boolean, classes: any, value: any }> {
+class MyForm extends React.Component<{}, { responseData: any, inputValue: any, filterSelectedOptions: boolean, ids: any, loading: string, players: any, shouldOpenList: boolean, classes: any, value: any, leagues: any }> {
   constructor(props:any) {
      super(props);
      this.state = {
       ids : null,
       loading : 'initial',
       players : '',
+      leagues : '', 
       shouldOpenList: false,
       classes : '',
       value : [],
@@ -31,10 +32,10 @@ class MyForm extends React.Component<{}, { responseData: any, inputValue: any, f
 
 fetchPlayers = async() => {
   try {
-    var url = `${process.env.REACT_APP_API_DOMAIN}/api/transactionSearch/getAllPlayers`;
-    let response = await fetch(url);
-    const data = await response.json();
-    this.setState({loading: 'false', players: data});
+    var playersUrl = `${process.env.REACT_APP_API_DOMAIN}/api/transactionSearch/getAllPlayers`;
+    let playerResponse = await fetch(playersUrl);
+    const data = await playerResponse.json();
+    this.setState({loading: 'false', players: data[0].players, leagues: data[0].leagues});
   } catch(err) {
     // catches errors both in fetch and response.json
     console.log(err);
@@ -134,7 +135,7 @@ render() {
               <TableCell>{row.yahoopositiontype}</TableCell>
               <TableCell align="right">{row.leaguename}</TableCell>
               <TableCell align="right">{row.ct}</TableCell>
-              <TableCell align="right">{row.rank_number}</TableCell>
+              <TableCell align="right">{row.countrank}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -146,6 +147,14 @@ render() {
             <Container maxWidth="md">
               
         <FormControl className={classes.root} fullWidth={true} margin={'normal'}> 
+        <RadioButtonGroup 
+    name="questionChoices"
+    valueSelected={that.props.questionID}
+    > 
+    {that.props.questionChoices.map(choice => (
+       <RadioButton value={choice} label={choice} key={choice}/> 
+    )} 
+  </RadioButtonGroup> 
           <Autocomplete
         multiple
         id="id"
